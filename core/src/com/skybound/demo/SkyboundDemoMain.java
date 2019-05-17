@@ -27,7 +27,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	@Override
 	public void create () {
 //		stage = new Stage(new ScreenViewport());
-		txtr = new Texture("AzuraNeutralBlue-1.png");
+		txtr = new Texture("MarthNeutralBlue-1.png");
 //		imag = new Image(txtr);
 //		imag.rotateBy(15);
 //		stage.addActor(imag);
@@ -51,14 +51,20 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 //		stage.act();
 //		stage.draw();
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) charRep.x -= 5;
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) charRep.x += 5;
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) { charRep.x -= 5;
+		if(charRep.getX() <= 0) charRep.x = 0;
+		}
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.UP)) { inAir = true; airMomentum = 5; }
 		
-		if(inAir) { charRep.y += airMomentum; airMomentum -= .5; }
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) { charRep.x += 5;
+		if(charRep.getX() >= 500) charRep.x = 500;
+		}
 		
-		if(charRep.y == 0) inAir = false;
+		if(Gdx.input.isKeyPressed(Input.Keys.UP) && !inAir) { inAir = true; airMomentum = 20; }
+		
+		if(inAir) { charRep.y += airMomentum; airMomentum -= 1.0; }
+		
+		if(charRep.getY() <= 0) { inAir = false; charRep.y = 0; }
 		
 	}
 	
