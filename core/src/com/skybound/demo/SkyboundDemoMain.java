@@ -35,6 +35,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		camera.setToOrtho(false, 800, 800);
 		batch = new SpriteBatch();
 		charRep = new Rectangle();
+		hb = new Hitbox();
 //		Music music = Gdx.audio.newMusic(Gdx.files.internal("Wake.mp3"));
 //		music.play();
 		SetupActors();
@@ -46,6 +47,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		mc.getSprite().draw(batch);
+		
 //		batch.draw(txtr, charRep.x, charRep.y);
 		batch.end();
 //		stage.act();

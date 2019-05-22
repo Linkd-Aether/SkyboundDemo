@@ -20,11 +20,11 @@ public class Hitbox extends Rectangle {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void set(boolean active) {
+	public void setActive(boolean active) {
 		this.active = active;
 	}
 	
-	public boolean get() {
+	public boolean getActive() {
 		return active;
 	}
 }
