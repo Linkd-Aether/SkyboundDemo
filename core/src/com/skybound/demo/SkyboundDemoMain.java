@@ -20,12 +20,13 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture txtr;
 	Sprite spr;
-	Image imag;
 	Stage stage;
 	OrthographicCamera camera;
 	Rectangle charRep;
 	PlayerChar mc;
-	Hitbox hb;
+	
+	Texture debug;
+	Hitbox tempHit;
 	
 	@Override
 	public void create () {
@@ -35,7 +36,8 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		camera.setToOrtho(false, 800, 800);
 		batch = new SpriteBatch();
 		charRep = new Rectangle();
-		hb = new Hitbox();
+		debug = new Texture("debug.png");
+		
 //		Music music = Gdx.audio.newMusic(Gdx.files.internal("Wake.mp3"));
 //		music.play();
 		SetupActors();
@@ -43,11 +45,14 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		mc.getSprite().draw(batch);
-		
+		if(mc.getHitbox().getActive()) {
+			tempHit = mc.getHitbox();
+			batch.draw(debug, tempHit.getX(), tempHit.getY(), tempHit.getWidth(), tempHit.getHeight());
+		}
 //		batch.draw(txtr, charRep.x, charRep.y);
 		batch.end();
 //		stage.act();
@@ -62,6 +67,6 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	}
 	
 	private void SetupActors(){
-		mc = new PlayerChar(charRep, txtr, spr, hb);
+		mc = new PlayerChar(charRep, txtr, spr);
 	}
 }

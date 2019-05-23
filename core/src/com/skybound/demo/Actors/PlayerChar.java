@@ -14,18 +14,19 @@ public class PlayerChar implements ActorGeneric {
 	Texture txtr;
 	Hitbox hit;
 	Sprite spri;
+	PlayerActions currentAction = PlayerActions.idle;
 	boolean inAir = false;
 	boolean facingRight = true;
-	boolean inAttack = false;
 	double airMomentum;
 	int framesSinceLastAction = 0;
 	int currentFrameTarget = 0;
 	
-	public PlayerChar(Rectangle rep, Texture txt, Sprite spr, Hitbox hb) {
+	public PlayerChar(Rectangle rep, Texture txt, Sprite spr) {
 		charRep = rep;
 		txtr = txt;
 		spri = spr;
-		hit = hb;
+		spri.setBounds(spri.getX(), spri.getY(), 100, 100);
+		hit = new Hitbox();
 	}
 	
 	@Override
@@ -51,55 +52,82 @@ public class PlayerChar implements ActorGeneric {
 		
 		framesSinceLastAction++;
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) { spri.translateX(-5);
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && (inAir || currentAction == PlayerActions.idle)) { spri.translateX(-5);
 			if(spri.getX() <= 0) spri.setX(0);
 			if(!inAir && facingRight) spri.flip(true, false);
 			if(!inAir) facingRight = false;
 		}
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) { spri.translateX(5);
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && (inAir || currentAction == PlayerActions.idle)) { spri.translateX(5);
 			if(spri.getX() >= 500) spri.setX(500);
 			if(!inAir && !facingRight) spri.flip(true, false);
 			if(!inAir) facingRight = true;
 		}
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.UP) && !inAir) { inAir = true; airMomentum = 20; }
+		if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && !inAir) { inAir = true; airMomentum = 20; }
 		
 		if(inAir) { spri.translateY((float) airMomentum); airMomentum -= 1.0; }
 		
 		if(spri.getY() < 0) { inAir = false; spri.setY(0); }
-		
-		System.out.println(inAir);
-		
-		if(Gdx.input.isKeyPressed(Input.Keys.Z) && !inAttack) {
-			if(facingRight) {
+				
+		if(Gdx.input.isKeyPressed(Input.Keys.Z) && currentAction == PlayerActions.idle) {
+			if(Gdx.input.isKeyPressed(Input.Keys.UP) && currentAction == PlayerActions.idle) {}
+			else if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && currentAction == PlayerActions.idle) {}
+			else if(facingRight) {
+				hit.width = 20;
+				hit.height = 20;
 				hit.x = spri.getX() + 20;
 				hit.y = spri.getY() + 20;
 				hit.setActive(true);
 				framesSinceLastAction = 0;
 				currentFrameTarget = 20;
-				inAttack = true;
+				if(inAir) {
+					if(Gdx.input.isKeyPressed(Input.Keys.LEFT))currentAction = PlayerActions.backAir;
+					else currentAction = PlayerActions.forwardAir;
+				}
+				else currentAction = PlayerActions.sideTilt;
 				changeSprite("MarthNeutralBlueAttack.png");
 			}
 			else {
+				hit.width = 20;
+				hit.height = 20;
 				hit.x = spri.getX() - 20;
 				hit.y = spri.getY() + 20;
 				hit.setActive(true);
 				framesSinceLastAction = 0;
 				currentFrameTarget = 20;
-				inAttack = true;
+				if(inAir) {
+					if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))currentAction = PlayerActions.backAir;
+					else currentAction = PlayerActions.forwardAir;
+				}
+				else currentAction = PlayerActions.sideTilt;
 				changeSprite("MarthNeutralBlueAttack.png");
+			}
+			
+			if(inAir) {
+				switch(currentAction) {
+//					case(PlayerActions.backAir){
+//						break;
+//					}
+				}
 			}
 		}
 		
+//		System.out.println(currentAction);
+		
 		if(framesSinceLastAction >= currentFrameTarget) {
-			inAttack = false;
+			currentAction = PlayerActions.idle;
 			changeSprite("MarthNeutralBlue-1.png");
+			hit.setActive(false);
 		}
 	}
 	
 	@Override
 	public Sprite getSprite() {
 		return spri;
+	}
+	
+	public Hitbox getHitbox() {
+		return hit;
 	}
 }
