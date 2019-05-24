@@ -1,6 +1,7 @@
 package com.skybound.demo.Actors;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.Texture;
 
 public interface ActorGeneric {
 

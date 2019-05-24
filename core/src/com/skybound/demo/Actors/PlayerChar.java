@@ -10,7 +10,6 @@ import com.skybound.demo.specialRects.Hitbox;
 
 public class PlayerChar implements ActorGeneric {
 
-	Rectangle charRep;
 	Texture txtr;
 	Hitbox hit;
 	Sprite spri;
@@ -20,9 +19,10 @@ public class PlayerChar implements ActorGeneric {
 	double airMomentum;
 	int framesSinceLastAction = 0;
 	int currentFrameTarget = 0;
+	int hitX = 0;
+	int hitY = 0;
 	
-	public PlayerChar(Rectangle rep, Texture txt, Sprite spr) {
-		charRep = rep;
+	public PlayerChar(Texture txt, Sprite spr) {
 		txtr = txt;
 		spri = spr;
 		spri.setBounds(spri.getX(), spri.getY(), 100, 100);
@@ -71,7 +71,23 @@ public class PlayerChar implements ActorGeneric {
 		if(spri.getY() < 0) { inAir = false; spri.setY(0); }
 				
 		if(Gdx.input.isKeyPressed(Input.Keys.Z) && currentAction == PlayerActions.idle) {
-			if(Gdx.input.isKeyPressed(Input.Keys.UP) && currentAction == PlayerActions.idle) {}
+			if(Gdx.input.isKeyPressed(Input.Keys.UP) && currentAction == PlayerActions.idle) {
+				hit.setWidth(75);
+				hit.setHeight(60);
+				hit.setX(spri.getX() + 20);
+				hit.setY(spri.getY() + 75);
+				hit.setActive(true);
+				framesSinceLastAction = 0;
+				
+				if(inAir) {
+					currentAction = PlayerActions.upAir;
+					currentFrameTarget = 15;
+				}
+				else {
+					currentAction = PlayerActions.upTilt;
+					currentFrameTarget = 20;
+				}
+			}
 			else if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && currentAction == PlayerActions.idle) {}
 			else if(facingRight) {
 				hit.width = 20;
@@ -103,17 +119,25 @@ public class PlayerChar implements ActorGeneric {
 				else currentAction = PlayerActions.sideTilt;
 				changeSprite("MarthNeutralBlueAttack.png");
 			}
-			
-			if(inAir) {
-				switch(currentAction) {
-//					case(PlayerActions.backAir){
-//						break;
-//					}
+		}
+		
+		if(inAir) {
+			switch(currentAction) {
+				case forwardAir: {
+					System.out.println("FORWARDAIR");
+					break;
+				}
+				case backAir: {
+					System.out.println("BACKAIR");
+//					hit.setX();
+					break;
+				}
+				case upAir: {
+					hit.setX(spri.getX() + 20);
+					hit.setY(spri.getY() + 75);
 				}
 			}
 		}
-		
-//		System.out.println(currentAction);
 		
 		if(framesSinceLastAction >= currentFrameTarget) {
 			currentAction = PlayerActions.idle;

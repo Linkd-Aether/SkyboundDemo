@@ -12,31 +12,37 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.skybound.demo.Actors.Enemy;
 import com.skybound.demo.Actors.PlayerChar;
 import com.skybound.demo.specialRects.Hitbox;
 import com.badlogic.gdx.math.Rectangle;
 
 public class SkyboundDemoMain extends ApplicationAdapter {
 	SpriteBatch batch;
-	Texture txtr;
-	Sprite spr;
+	Texture playerTxtr;
+	Sprite playerSpr;
 	Stage stage;
 	OrthographicCamera camera;
-	Rectangle charRep;
 	PlayerChar mc;
 	
-	Texture debug;
+	Enemy foe;
+	Texture enemyTxtr;
+	Sprite enemySpr;
+	
+	boolean debug = true;
+	Texture debugBox;
 	Hitbox tempHit;
 	
 	@Override
 	public void create () {
-		txtr = new Texture("MarthNeutralBlue-1.png");
-		spr = new Sprite(txtr);
+		playerTxtr = new Texture("MarthNeutralBlue-1.png");
+		playerSpr = new Sprite(playerTxtr);
+		enemyTxtr = new Texture("GrimaNeutralBlue-1.png");
+		enemySpr = new Sprite(enemyTxtr);
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 800);
 		batch = new SpriteBatch();
-		charRep = new Rectangle();
-		debug = new Texture("debug.png");
+		debugBox = new Texture("debug.png");
 		
 //		Music music = Gdx.audio.newMusic(Gdx.files.internal("Wake.mp3"));
 //		music.play();
@@ -49,9 +55,10 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		mc.getSprite().draw(batch);
-		if(mc.getHitbox().getActive()) {
+		foe.getSprite().draw(batch);
+		if(mc.getHitbox().getActive() && debug) {
 			tempHit = mc.getHitbox();
-			batch.draw(debug, tempHit.getX(), tempHit.getY(), tempHit.getWidth(), tempHit.getHeight());
+			batch.draw(debugBox, tempHit.getX(), tempHit.getY(), tempHit.getWidth(), tempHit.getHeight());
 		}
 //		batch.draw(txtr, charRep.x, charRep.y);
 		batch.end();
@@ -63,10 +70,11 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		txtr.dispose();
+		playerTxtr.dispose();
 	}
 	
 	private void SetupActors(){
-		mc = new PlayerChar(charRep, txtr, spr);
+		mc = new PlayerChar(playerTxtr, playerSpr);
+		foe = new Enemy(enemyTxtr, enemySpr);
 	}
 }
