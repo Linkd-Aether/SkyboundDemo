@@ -31,14 +31,12 @@ public class PlayerChar implements ActorGeneric {
 	
 	@Override
 	public int getX() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int)spri.getX();
 	}
 
 	@Override
 	public int getY() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int)spri.getY();
 	}
 
 	@Override
@@ -47,6 +45,14 @@ public class PlayerChar implements ActorGeneric {
 		spri.setTexture(txtr);
 	}
 
+	@Override
+	public void setHit(int width, int height, int x, int y) {
+		hit.setWidth(width);
+		hit.setHeight(height);
+		hit.setX(spri.getX() + x);
+		hit.setY(spri.getY() + y);
+	}
+	
 	@Override
 	public void update() {
 		
@@ -71,11 +77,10 @@ public class PlayerChar implements ActorGeneric {
 		if(spri.getY() < 0) { inAir = false; spri.setY(0); }
 				
 		if(Gdx.input.isKeyPressed(Input.Keys.Z) && currentAction == PlayerActions.idle) {
+			
+			//Up attacks
 			if(Gdx.input.isKeyPressed(Input.Keys.UP) && currentAction == PlayerActions.idle) {
-				hit.setWidth(75);
-				hit.setHeight(60);
-				hit.setX(spri.getX() + 20);
-				hit.setY(spri.getY() + 75);
+				setHit(75, 60, 20, 75);
 				hit.setActive(true);
 				framesSinceLastAction = 0;
 				
@@ -88,27 +93,44 @@ public class PlayerChar implements ActorGeneric {
 					currentFrameTarget = 20;
 				}
 			}
-			else if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && currentAction == PlayerActions.idle) {}
-			else if(facingRight) {
-				hit.width = 20;
-				hit.height = 20;
-				hit.x = spri.getX() + 20;
-				hit.y = spri.getY() + 20;
+			
+			//Down attacks
+			else if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && currentAction == PlayerActions.idle) {
 				hit.setActive(true);
 				framesSinceLastAction = 0;
 				currentFrameTarget = 20;
 				if(inAir) {
-					if(Gdx.input.isKeyPressed(Input.Keys.LEFT))currentAction = PlayerActions.backAir;
-					else currentAction = PlayerActions.forwardAir;
+					setHit(60, 50, 20, -40);
+					currentAction = PlayerActions.downAir;
 				}
-				else currentAction = PlayerActions.sideTilt;
+				else {
+					
+				}
+			}
+			
+			//Side attacks
+			else if(facingRight) {
+				hit.setActive(true);
+				framesSinceLastAction = 0;
+				currentFrameTarget = 20;
+				if(inAir) {
+					if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+						setHit(60, 70, 60, 20);
+						currentAction = PlayerActions.backAir;
+					}
+					else {
+						setHit(60, 70, 60, 20);
+						currentAction = PlayerActions.forwardAir;
+					}
+				}
+				else {
+					setHit(60, 70, 60, 20);
+					currentAction = PlayerActions.sideTilt;
+				}
 				changeSprite("MarthNeutralBlueAttack.png");
 			}
 			else {
-				hit.width = 20;
-				hit.height = 20;
-				hit.x = spri.getX() - 20;
-				hit.y = spri.getY() + 20;
+				setHit(60, 70, -20, 20);
 				hit.setActive(true);
 				framesSinceLastAction = 0;
 				currentFrameTarget = 20;
@@ -121,20 +143,23 @@ public class PlayerChar implements ActorGeneric {
 			}
 		}
 		
+		//Aerial hitbox movement
 		if(inAir) {
 			switch(currentAction) {
 				case forwardAir: {
-					System.out.println("FORWARDAIR");
 					break;
 				}
 				case backAir: {
-					System.out.println("BACKAIR");
 //					hit.setX();
 					break;
 				}
 				case upAir: {
 					hit.setX(spri.getX() + 20);
 					hit.setY(spri.getY() + 75);
+				}
+				case downAir: {
+					hit.setX(spri.getX() + 20);
+					hit.setY(spri.getY() - 40);
 				}
 			}
 		}

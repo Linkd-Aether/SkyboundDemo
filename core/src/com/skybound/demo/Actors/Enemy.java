@@ -53,4 +53,10 @@ public class Enemy implements ActorGeneric {
 		return spri;
 	}
 
+	@Override
+	public void setHit(int width, int height, int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

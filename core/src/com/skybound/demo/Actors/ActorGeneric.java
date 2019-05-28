@@ -11,6 +11,8 @@ public interface ActorGeneric {
 	
 	public void changeSprite(String toChange);
 	
+	public void setHit(int width, int height, int x, int y);
+	
 	public void update();
 	
 	public Sprite getSprite();
