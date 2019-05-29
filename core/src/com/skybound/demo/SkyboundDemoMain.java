@@ -54,8 +54,8 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		mc.getSprite().draw(batch);
 		foe.getSprite().draw(batch);
+		mc.getSprite().draw(batch);
 		if(mc.getHitbox().getActive() && debug) {
 			tempHit = mc.getHitbox();
 			batch.draw(debugBox, tempHit.getX(), tempHit.getY(), tempHit.getWidth(), tempHit.getHeight());

@@ -9,11 +9,14 @@ public class Enemy implements ActorGeneric {
 	Texture txtr;
 	Hitbox hit;
 	Sprite spri;
+	EnemyActions currentAction = EnemyActions.idle;
 	boolean inAir = false;
 	boolean facingRight = true;
 	double airMomentum;
-	int framesSinceLastAction = 0;
-	int currentFrameTarget = 0;
+	int startLag = 0;
+	int duration = 0;
+	int endLag = 0;
+	int framesIdle = 0;
 	int hitX = 0;
 	int hitY = 0;
 	
@@ -26,14 +29,12 @@ public class Enemy implements ActorGeneric {
 
 	@Override
 	public int getX() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int)spri.getX();
 	}
 
 	@Override
 	public int getY() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int)spri.getY();
 	}
 
 	@Override
@@ -55,8 +56,17 @@ public class Enemy implements ActorGeneric {
 
 	@Override
 	public void setHit(int width, int height, int x, int y) {
-		// TODO Auto-generated method stub
-		
+		hit.setWidth(width);
+		hit.setHeight(height);
+		hit.setX(spri.getX() + x);
+		hit.setY(spri.getY() + y);
+	}
+
+	@Override
+	public void setLags(int start, int dur, int end) {
+		startLag = start;
+		duration = dur;
+		endLag = end;
 	}
 
 }

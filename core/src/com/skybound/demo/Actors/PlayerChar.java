@@ -18,7 +18,9 @@ public class PlayerChar implements ActorGeneric {
 	boolean facingRight = true;
 	double airMomentum;
 	int framesSinceLastAction = 0;
-	int currentFrameTarget = 0;
+	int duration = 0;
+	int startLag = 0;
+	int endLag = 0;
 	int hitX = 0;
 	int hitY = 0;
 	
@@ -54,9 +56,18 @@ public class PlayerChar implements ActorGeneric {
 	}
 	
 	@Override
+	public void setLags(int start, int dur, int end) {
+		startLag = start;
+		duration = dur;
+		endLag = end;
+	}
+	
+	@Override
 	public void update() {
 		
 		framesSinceLastAction++;
+		
+		startLag--;
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && (inAir || currentAction == PlayerActions.idle)) { spri.translateX(-5);
 			if(spri.getX() <= 0) spri.setX(0);
@@ -76,70 +87,76 @@ public class PlayerChar implements ActorGeneric {
 		
 		if(spri.getY() < 0) { inAir = false; spri.setY(0); }
 				
-		if(Gdx.input.isKeyPressed(Input.Keys.Z) && currentAction == PlayerActions.idle) {
+		if(Gdx.input.isKeyJustPressed(Input.Keys.Z) && currentAction == PlayerActions.idle) {
+			
+			framesSinceLastAction = 0;
 			
 			//Up attacks
-			if(Gdx.input.isKeyPressed(Input.Keys.UP) && currentAction == PlayerActions.idle) {
+			if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
 				setHit(75, 60, 20, 75);
-				hit.setActive(true);
-				framesSinceLastAction = 0;
-				
 				if(inAir) {
 					currentAction = PlayerActions.upAir;
-					currentFrameTarget = 15;
+					setLags(3, 15, 5);
 				}
 				else {
 					currentAction = PlayerActions.upTilt;
-					currentFrameTarget = 20;
+					setLags(5, 20, 5);
 				}
 			}
 			
 			//Down attacks
-			else if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && currentAction == PlayerActions.idle) {
-				hit.setActive(true);
-				framesSinceLastAction = 0;
-				currentFrameTarget = 20;
+			else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 				if(inAir) {
 					setHit(60, 50, 20, -40);
 					currentAction = PlayerActions.downAir;
+					setLags(5, 20, 8);
 				}
 				else {
-					
+					if(facingRight) setHit(60, 10, 70, 10);
+					else setHit(60, 10, -20, 10);
+					currentAction = PlayerActions.downTilt;
+					setLags(2, 10, 3);
 				}
 			}
 			
 			//Side attacks
 			else if(facingRight) {
-				hit.setActive(true);
-				framesSinceLastAction = 0;
-				currentFrameTarget = 20;
 				if(inAir) {
 					if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-						setHit(60, 70, 60, 20);
+						setHit(70, 40, -20, 20);
 						currentAction = PlayerActions.backAir;
+						setLags(5, 20, 8);
 					}
 					else {
-						setHit(60, 70, 60, 20);
+						setHit(60, 80, 60, 20);
 						currentAction = PlayerActions.forwardAir;
+						setLags(3, 15, 6);
 					}
 				}
 				else {
 					setHit(60, 70, 60, 20);
 					currentAction = PlayerActions.sideTilt;
+					setLags(6, 20, 8);
 				}
-				changeSprite("MarthNeutralBlueAttack.png");
 			}
 			else {
-				setHit(60, 70, -20, 20);
-				hit.setActive(true);
-				framesSinceLastAction = 0;
-				currentFrameTarget = 20;
 				if(inAir) {
-					if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))currentAction = PlayerActions.backAir;
-					else currentAction = PlayerActions.forwardAir;
+					if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+						setHit(70, 40, 60, 20);
+						currentAction = PlayerActions.backAir;
+						setLags(5, 20, 8);
+					}
+					else {
+						setHit(60, 80, -20, 20);
+						currentAction = PlayerActions.forwardAir;
+						setLags(3, 15, 6);
+					}
 				}
-				else currentAction = PlayerActions.sideTilt;
-				changeSprite("MarthNeutralBlueAttack.png");
+				else {
+					setHit(60, 70, -20, 20);
+					currentAction = PlayerActions.sideTilt;
+					setLags(6, 20, 8);
+				}
 			}
 		}
 		
@@ -147,27 +164,51 @@ public class PlayerChar implements ActorGeneric {
 		if(inAir) {
 			switch(currentAction) {
 				case forwardAir: {
+					if(facingRight) {
+						hit.setX(spri.getX() + 60);
+						hit.setY(spri.getY() + 20);
+					}
+					else {
+						hit.setX(spri.getX() - 20);
+						hit.setY(spri.getY() + 20);
+					}
 					break;
 				}
 				case backAir: {
-//					hit.setX();
+					if(facingRight) {
+						hit.setX(spri.getX() - 20);
+						hit.setY(spri.getY() + 20);
+					}
+					else {
+						hit.setX(spri.getX() + 60);
+						hit.setY(spri.getY() + 20);
+					}
 					break;
 				}
 				case upAir: {
 					hit.setX(spri.getX() + 20);
 					hit.setY(spri.getY() + 75);
+					break;
 				}
 				case downAir: {
 					hit.setX(spri.getX() + 20);
 					hit.setY(spri.getY() - 40);
+					break;
 				}
 			}
 		}
 		
-		if(framesSinceLastAction >= currentFrameTarget) {
-			currentAction = PlayerActions.idle;
-			changeSprite("MarthNeutralBlue-1.png");
+		if(startLag == 0) {
+			hit.setActive(true);
+		}
+		
+		if(framesSinceLastAction >= duration) {
+			if(inAir) changeSprite("MarthNeutralBlue-1.png");
+			else changeSprite("MarthNeutralBlue-1.png");
 			hit.setActive(false);
+			if(endLag-- == 0) {
+				currentAction = PlayerActions.idle;
+			}
 		}
 	}
 	
