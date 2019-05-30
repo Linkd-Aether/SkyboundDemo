@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -16,6 +17,7 @@ import com.skybound.demo.Actors.Enemy;
 import com.skybound.demo.Actors.PlayerChar;
 import com.skybound.demo.specialRects.Hitbox;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 public class SkyboundDemoMain extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -35,6 +37,13 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/myfont.ttf"));
+		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		parameter.size = 12;
+		BitmapFont font12 = generator.generateFont(parameter); // font size 12 pixels
+		generator.dispose(); // don't forget to dispose to avoid memory leaks!
+		
 		playerTxtr = new Texture("MarthNeutralBlue-1.png");
 		playerSpr = new Sprite(playerTxtr);
 		enemyTxtr = new Texture("GrimaNeutralBlue-1.png");
