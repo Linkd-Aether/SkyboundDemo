@@ -16,8 +16,10 @@ public class PlayerChar implements ActorGeneric {
 	PlayerActions currentAction = PlayerActions.idle;
 	boolean inAir = false;
 	boolean facingRight = true;
+	boolean invulnerable = false;
 	double airMomentum;
 	int framesSinceLastAction = 0;
+	int framesInvulnerable = 0;
 	int duration = 0;
 	int startLag = 0;
 	int endLag = 0;
@@ -62,6 +64,16 @@ public class PlayerChar implements ActorGeneric {
 		endLag = end;
 	}
 	
+	public void takeDamage() {
+		currentAction = PlayerActions.takeDamage;
+		invulnerable = true;
+		inAir = true;
+		airMomentum += 5;
+		framesSinceLastAction = 0;
+		framesInvulnerable = 0;
+		System.out.println("HIT");
+	}
+	
 	@Override
 	public void update() {
 		
@@ -81,7 +93,7 @@ public class PlayerChar implements ActorGeneric {
 			if(!inAir) facingRight = true;
 		}
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && !inAir) { inAir = true; airMomentum = 20; }
+		if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && !inAir && currentAction == PlayerActions.idle) { inAir = true; airMomentum = 20; }
 		
 		if(inAir) { spri.translateY((float) airMomentum); airMomentum -= 1.0; }
 		
@@ -210,6 +222,15 @@ public class PlayerChar implements ActorGeneric {
 				currentAction = PlayerActions.idle;
 			}
 		}
+		
+		if(spri.getBoundingRectangle().overlaps(Enemy.hit) && Enemy.hit.getActive() && !invulnerable) takeDamage();
+		
+		if(currentAction == PlayerActions.takeDamage && framesSinceLastAction >= 30) currentAction = PlayerActions.idle;
+		
+		if(invulnerable) framesInvulnerable++;
+		
+		if(framesInvulnerable >= 120) invulnerable = false;
+		
 	}
 	
 	@Override
@@ -217,6 +238,7 @@ public class PlayerChar implements ActorGeneric {
 		return spri;
 	}
 	
+	@Override
 	public Hitbox getHitbox() {
 		return hit;
 	}

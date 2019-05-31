@@ -18,6 +18,7 @@ import com.skybound.demo.Actors.PlayerChar;
 import com.skybound.demo.specialRects.Hitbox;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class SkyboundDemoMain extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -30,6 +31,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	Enemy foe;
 	Texture enemyTxtr;
 	Sprite enemySpr;
+	Texture debugBox2;
 	
 	boolean debug = true;
 	Texture debugBox;
@@ -38,11 +40,11 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	@Override
 	public void create () {
 		
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/myfont.ttf"));
-		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.size = 12;
-		BitmapFont font12 = generator.generateFont(parameter); // font size 12 pixels
-		generator.dispose(); // don't forget to dispose to avoid memory leaks!
+//		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("perpetua.tff"));
+//		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+//		parameter.size = 12;
+//		BitmapFont font12 = generator.generateFont(parameter); // font size 12 pixels
+//		generator.dispose(); // don't forget to dispose to avoid memory leaks!
 		
 		playerTxtr = new Texture("MarthNeutralBlue-1.png");
 		playerSpr = new Sprite(playerTxtr);
@@ -52,7 +54,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		camera.setToOrtho(false, 800, 800);
 		batch = new SpriteBatch();
 		debugBox = new Texture("debug.png");
-		
+		debugBox2 = new Texture("debug2.png");
 //		Music music = Gdx.audio.newMusic(Gdx.files.internal("Wake.mp3"));
 //		music.play();
 		SetupActors();
@@ -69,11 +71,13 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 			tempHit = mc.getHitbox();
 			batch.draw(debugBox, tempHit.getX(), tempHit.getY(), tempHit.getWidth(), tempHit.getHeight());
 		}
-//		batch.draw(txtr, charRep.x, charRep.y);
+		if(foe.getHitbox().getActive() && debug) {
+			tempHit = foe.getHitbox();
+			batch.draw(debugBox2, tempHit.getX(), tempHit.getY(), tempHit.getWidth(), tempHit.getHeight());
+		}
 		batch.end();
-//		stage.act();
-//		stage.draw();
 		mc.update();
+		foe.update();
 	}
 	
 	@Override

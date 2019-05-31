@@ -7,7 +7,7 @@ import com.skybound.demo.specialRects.Hitbox;
 public class Enemy implements ActorGeneric {
 
 	Texture txtr;
-	Hitbox hit;
+	public static Hitbox hit;
 	Sprite spri;
 	EnemyActions currentAction = EnemyActions.idle;
 	boolean inAir = false;
@@ -45,13 +45,18 @@ public class Enemy implements ActorGeneric {
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-
+		setHit(100, 100, 200, 100);
+		hit.setActive(true);
 	}
 
 	@Override
 	public Sprite getSprite() {
 		return spri;
+	}
+	
+	@Override
+	public Hitbox getHitbox() {
+		return hit;
 	}
 
 	@Override
