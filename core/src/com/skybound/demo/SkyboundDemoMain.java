@@ -25,9 +25,9 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	Sprite playerSpr;
 	Stage stage;
 	OrthographicCamera camera;
-	PlayerChar mc;
+	public static PlayerChar mc;
 	
-	Enemy foe;
+	public static Enemy foe;
 	Texture enemyTxtr;
 	Sprite enemySpr;
 	Texture debugBox2;

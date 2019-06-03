@@ -2,6 +2,7 @@ package com.skybound.demo.Actors;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.skybound.demo.SkyboundDemoMain;
 import com.skybound.demo.specialRects.Hitbox;
 
 public class Enemy implements ActorGeneric {
@@ -50,16 +51,35 @@ public class Enemy implements ActorGeneric {
 		if(currentAction == EnemyActions.idle) {
 			framesIdle++;
 			if(framesIdle % 10 == 0 && Math.random() * 1200 <= framesIdle) {
+				framesIdle = 0;
 				actionChoice = (int) (Math.random() * 100);
 				if(actionChoice <= 19) walk((int)Math.random() * 3 + 3);
 				else if(actionChoice <= 49) claw();
-				else if(actionChoice <= 69) fireball();
+				else if(actionChoice <= 69) {
+					if(!inAir)fireball();
+					else flyFireball();
+				}
 				else if(actionChoice <= 89) jump();
 				else if(actionChoice <= 99) fly();
 			}
 		}
 		
+		if(currentAction == EnemyActions.walk) {
+			if(duration-- >= 0) {
+				if(Math.abs(SkyboundDemoMain.mc.getSprite().getX() - (getX() + 150)) < 20) {
+					claw();
+				}
+				else if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) spri.translateX(2);
+				else spri.translateX(-2);
+			}
+		}
 		
+		if(currentAction == EnemyActions.claw) {
+			if(duration-- >= 0) {
+				if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) spri.translateX(2);
+				else setHit(50, 50, (int) spri.getX() - 20, (int) spri.getY() + 50);
+			}
+		}
 	}
 
 	@Override
@@ -90,32 +110,38 @@ public class Enemy implements ActorGeneric {
 	public void walk(int frames) {
 		duration = frames;
 		currentAction = EnemyActions.walk;
+		System.out.println(currentAction);
 	}
 	
 	public void claw() {
 		duration = 180;
 		currentAction = EnemyActions.claw;
+		System.out.println(currentAction);
 	}
 	
 	public void fireball() {
 		duration = 120;
 		currentAction = EnemyActions.fireball;
+		System.out.println(currentAction);
 	}
 	
 	public void jump() {
 		duration = 180;
 		currentAction = EnemyActions.jump;
+		System.out.println(currentAction);
 	}
 	
 	public void fly() {
 		duration = 600;
 		currentAction = EnemyActions.fly;
+		System.out.println(currentAction);
 		inAir = true;
 	}
 	
 	public void flyFireball() {
 		duration = 120;
 		currentAction = EnemyActions.flyFireball;
+		System.out.println(currentAction);
 	}
 	
 }
