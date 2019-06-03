@@ -17,9 +17,11 @@ public class PlayerChar implements ActorGeneric {
 	boolean inAir = false;
 	boolean facingRight = true;
 	boolean invulnerable = false;
+	boolean hasAirAttacked = false;
 	double airMomentum;
 	int framesSinceLastAction = 0;
 	int framesInvulnerable = 0;
+	int idleCount = 1;
 	int duration = 0;
 	int startLag = 0;
 	int endLag = 0;
@@ -68,10 +70,11 @@ public class PlayerChar implements ActorGeneric {
 		currentAction = PlayerActions.takeDamage;
 		invulnerable = true;
 		inAir = true;
-		airMomentum += 5;
+		airMomentum = 10;
 		framesSinceLastAction = 0;
 		framesInvulnerable = 0;
 		System.out.println("HIT");
+		spri.setAlpha((float) .5);
 	}
 	
 	@Override
@@ -81,13 +84,13 @@ public class PlayerChar implements ActorGeneric {
 		
 		startLag--;
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && (inAir || currentAction == PlayerActions.idle)) { spri.translateX(-5);
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(-5);
 			if(spri.getX() <= 0) spri.setX(0);
 			if(!inAir && facingRight) spri.flip(true, false);
 			if(!inAir) facingRight = false;
 		}
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && (inAir || currentAction == PlayerActions.idle)) { spri.translateX(5);
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(5);
 			if(spri.getX() >= 500) spri.setX(500);
 			if(!inAir && !facingRight) spri.flip(true, false);
 			if(!inAir) facingRight = true;
@@ -97,7 +100,12 @@ public class PlayerChar implements ActorGeneric {
 		
 		if(inAir) { spri.translateY((float) airMomentum); airMomentum -= 1.0; }
 		
-		if(spri.getY() < 0) { inAir = false; spri.setY(0); }
+		if(spri.getY() < 0) {
+			inAir = false;
+			spri.setY(0);
+			idleCount = 1;
+			hasAirAttacked = false;
+		}
 				
 		if(Gdx.input.isKeyJustPressed(Input.Keys.Z) && currentAction == PlayerActions.idle) {
 			
@@ -107,6 +115,7 @@ public class PlayerChar implements ActorGeneric {
 			if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
 				setHit(75, 60, 20, 75);
 				if(inAir) {
+					hasAirAttacked = true;
 					currentAction = PlayerActions.upAir;
 					setLags(3, 15, 5);
 				}
@@ -120,6 +129,7 @@ public class PlayerChar implements ActorGeneric {
 			else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 				if(inAir) {
 					setHit(60, 50, 20, -40);
+					hasAirAttacked = true;
 					currentAction = PlayerActions.downAir;
 					setLags(5, 20, 8);
 				}
@@ -136,6 +146,7 @@ public class PlayerChar implements ActorGeneric {
 				if(inAir) {
 					if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 						setHit(70, 40, -20, 20);
+						hasAirAttacked = true;
 						currentAction = PlayerActions.backAir;
 						setLags(5, 20, 8);
 					}
@@ -155,11 +166,13 @@ public class PlayerChar implements ActorGeneric {
 				if(inAir) {
 					if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 						setHit(70, 40, 60, 20);
+						hasAirAttacked = true;
 						currentAction = PlayerActions.backAir;
 						setLags(5, 20, 8);
 					}
 					else {
 						setHit(60, 80, -20, 20);
+						hasAirAttacked = true;
 						currentAction = PlayerActions.forwardAir;
 						setLags(3, 15, 6);
 					}
@@ -215,8 +228,8 @@ public class PlayerChar implements ActorGeneric {
 		}
 		
 		if(framesSinceLastAction >= duration) {
-			if(inAir) changeSprite("MarthNeutralBlue-1.png");
-			else changeSprite("MarthNeutralBlue-1.png");
+			if(inAir) changeSprite("AyanaNeutral-1.png");
+			else changeSprite("AyanaNeutral-1.png");
 			hit.setActive(false);
 			if(endLag-- == 0) {
 				currentAction = PlayerActions.idle;
@@ -229,8 +242,17 @@ public class PlayerChar implements ActorGeneric {
 		
 		if(invulnerable) framesInvulnerable++;
 		
-		if(framesInvulnerable >= 120) invulnerable = false;
+		if(framesInvulnerable >= 60) {
+			invulnerable = false;
+			spri.setAlpha(1);
+		}
 		
+		if(currentAction == PlayerActions.idle) {
+			if(inAir);
+			else changeSprite("AyanaNeutral-" + (idleCount++ / 20 + 1) + ".png");
+		}
+		
+		if(idleCount == 60)idleCount = 0;
 	}
 	
 	@Override

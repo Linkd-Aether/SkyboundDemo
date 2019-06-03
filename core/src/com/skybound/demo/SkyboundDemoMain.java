@@ -17,8 +17,7 @@ import com.skybound.demo.Actors.Enemy;
 import com.skybound.demo.Actors.PlayerChar;
 import com.skybound.demo.specialRects.Hitbox;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+
 
 public class SkyboundDemoMain extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -46,7 +45,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 //		BitmapFont font12 = generator.generateFont(parameter); // font size 12 pixels
 //		generator.dispose(); // don't forget to dispose to avoid memory leaks!
 		
-		playerTxtr = new Texture("MarthNeutralBlue-1.png");
+		playerTxtr = new Texture("AyanaNeutral-1.png");
 		playerSpr = new Sprite(playerTxtr);
 		enemyTxtr = new Texture("GrimaNeutralBlue-1.png");
 		enemySpr = new Sprite(enemyTxtr);

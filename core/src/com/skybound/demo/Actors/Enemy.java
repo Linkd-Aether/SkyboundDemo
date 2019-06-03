@@ -45,8 +45,7 @@ public class Enemy implements ActorGeneric {
 
 	@Override
 	public void update() {
-		setHit(100, 100, 200, 100);
-		hit.setActive(true);
+		
 	}
 
 	@Override
@@ -74,4 +73,28 @@ public class Enemy implements ActorGeneric {
 		endLag = end;
 	}
 
+	public void walk(int frames) {
+		
+	}
+	
+	public void claw() {
+		
+	}
+	
+	public void fireball() {
+		
+	}
+	
+	public void jump() {
+		
+	}
+	
+	public void fly() {
+		
+	}
+	
+	public void flyFireball() {
+		
+	}
+	
 }
