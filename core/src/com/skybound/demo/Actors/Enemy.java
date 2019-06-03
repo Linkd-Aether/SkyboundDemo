@@ -13,12 +13,14 @@ public class Enemy implements ActorGeneric {
 	boolean inAir = false;
 	boolean facingRight = true;
 	double airMomentum;
+	int actionChoice = 0;
 	int startLag = 0;
 	int duration = 0;
 	int endLag = 0;
 	int framesIdle = 0;
 	int hitX = 0;
 	int hitY = 0;
+	
 	
 	public Enemy(Texture txt, Sprite spr) {
 		txtr = txt;
@@ -45,7 +47,17 @@ public class Enemy implements ActorGeneric {
 
 	@Override
 	public void update() {
-		if(currentAction == EnemyActions.idle) framesIdle++;
+		if(currentAction == EnemyActions.idle) {
+			framesIdle++;
+			if(framesIdle % 10 == 0 && Math.random() * 1200 <= framesIdle) {
+				actionChoice = (int) (Math.random() * 100);
+				if(actionChoice <= 19) walk((int)Math.random() * 3 + 3);
+				else if(actionChoice <= 49) claw();
+				else if(actionChoice <= 69) fireball();
+				else if(actionChoice <= 89) jump();
+				else if(actionChoice <= 99) fly();
+			}
+		}
 		
 		
 	}
@@ -76,27 +88,34 @@ public class Enemy implements ActorGeneric {
 	}
 
 	public void walk(int frames) {
-		
+		duration = frames;
+		currentAction = EnemyActions.walk;
 	}
 	
 	public void claw() {
-		
+		duration = 180;
+		currentAction = EnemyActions.claw;
 	}
 	
 	public void fireball() {
-		
+		duration = 120;
+		currentAction = EnemyActions.fireball;
 	}
 	
 	public void jump() {
-		
+		duration = 180;
+		currentAction = EnemyActions.jump;
 	}
 	
 	public void fly() {
-		
+		duration = 600;
+		currentAction = EnemyActions.fly;
+		inAir = true;
 	}
 	
 	public void flyFireball() {
-		
+		duration = 120;
+		currentAction = EnemyActions.flyFireball;
 	}
 	
 }
