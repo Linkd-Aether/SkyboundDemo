@@ -45,6 +45,8 @@ public class Enemy implements ActorGeneric {
 
 	@Override
 	public void update() {
+		if(currentAction == EnemyActions.idle) framesIdle++;
+		
 		
 	}
 
