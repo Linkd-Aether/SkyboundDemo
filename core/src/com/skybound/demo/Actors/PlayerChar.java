@@ -21,6 +21,7 @@ public class PlayerChar implements ActorGeneric {
 	double airMomentum;
 	int framesSinceLastAction = 0;
 	int framesInvulnerable = 0;
+	int frameAirSpin = 0;
 	int idleCount = 1;
 	int duration = 0;
 	int startLag = 0;
@@ -33,6 +34,7 @@ public class PlayerChar implements ActorGeneric {
 		spri = spr;
 		spri.setBounds(spri.getX(), spri.getY(), 100, 100);
 		hit = new Hitbox();
+		spri.setOriginCenter();
 	}
 	
 	@Override
@@ -84,13 +86,13 @@ public class PlayerChar implements ActorGeneric {
 		
 		startLag--;
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(-5);
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(-7);
 			if(spri.getX() <= 0) spri.setX(0);
 			if(!inAir && facingRight) spri.flip(true, false);
 			if(!inAir) facingRight = false;
 		}
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(5);
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(7);
 			if(spri.getX() >= 500) spri.setX(500);
 			if(!inAir && !facingRight) spri.flip(true, false);
 			if(!inAir) facingRight = true;
@@ -105,9 +107,12 @@ public class PlayerChar implements ActorGeneric {
 			spri.setY(0);
 			idleCount = 1;
 			hasAirAttacked = false;
+			spri.setRotation(0);
 		}
 				
 		if(Gdx.input.isKeyJustPressed(Input.Keys.Z) && currentAction == PlayerActions.idle) {
+			
+			spri.setRotation(0);
 			
 			framesSinceLastAction = 0;
 			
@@ -128,14 +133,16 @@ public class PlayerChar implements ActorGeneric {
 			//Down attacks
 			else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 				if(inAir) {
-					setHit(60, 50, 20, -40);
+					setHit(60, 50, 20, -20);
 					hasAirAttacked = true;
+					changeSprite("AyanaDAir-1.png");
 					currentAction = PlayerActions.downAir;
 					setLags(5, 20, 8);
 				}
 				else {
 					if(facingRight) setHit(60, 10, 70, 10);
 					else setHit(60, 10, -20, 10);
+					changeSprite("AyanaDTilt-1.png");
 					currentAction = PlayerActions.downTilt;
 					setLags(2, 10, 3);
 				}
@@ -152,6 +159,8 @@ public class PlayerChar implements ActorGeneric {
 					}
 					else {
 						setHit(60, 80, 60, 20);
+						hasAirAttacked = true;
+						changeSprite("AyanaFAir-1.png");
 						currentAction = PlayerActions.forwardAir;
 						setLags(3, 15, 6);
 					}
@@ -173,6 +182,7 @@ public class PlayerChar implements ActorGeneric {
 					else {
 						setHit(60, 80, -20, 20);
 						hasAirAttacked = true;
+						changeSprite("AyanaFAir-1.png");
 						currentAction = PlayerActions.forwardAir;
 						setLags(3, 15, 6);
 					}
@@ -217,10 +227,18 @@ public class PlayerChar implements ActorGeneric {
 				}
 				case downAir: {
 					hit.setX(spri.getX() + 20);
-					hit.setY(spri.getY() - 40);
+					hit.setY(spri.getY() - 20);
 					break;
 				}
 			}
+			
+			if(!hasAirAttacked) {
+				changeSprite("AyanaAirSpin-1.png");
+				if(frameAirSpin == 4) frameAirSpin = 0;
+				spri.setRotation(frameAirSpin++ * 90);
+				
+			}
+			
 		}
 		
 		if(startLag == 0) {
@@ -228,8 +246,7 @@ public class PlayerChar implements ActorGeneric {
 		}
 		
 		if(framesSinceLastAction >= duration) {
-			if(inAir) changeSprite("AyanaNeutral-1.png");
-			else changeSprite("AyanaNeutral-1.png");
+			if(inAir && hasAirAttacked) changeSprite("AyanaNeutral-1.png");
 			hit.setActive(false);
 			if(endLag-- == 0) {
 				currentAction = PlayerActions.idle;
@@ -248,11 +265,11 @@ public class PlayerChar implements ActorGeneric {
 		}
 		
 		if(currentAction == PlayerActions.idle) {
-			if(inAir);
-			else changeSprite("AyanaNeutral-" + (idleCount++ / 20 + 1) + ".png");
+			if(!inAir) changeSprite("AyanaNeutral-" + (idleCount++ / 20 + 1) + ".png");
 		}
 		
-		if(idleCount == 60)idleCount = 0;
+		if(idleCount == 60) idleCount = 0;
+		
 	}
 	
 	@Override

@@ -53,14 +53,22 @@ public class Enemy implements ActorGeneric {
 			if(framesIdle % 10 == 0 && Math.random() * 1200 <= framesIdle) {
 				framesIdle = 0;
 				actionChoice = (int) (Math.random() * 100);
-				if(actionChoice <= 19) walk((int)Math.random() * 3 + 3);
-				else if(actionChoice <= 49) claw();
+				if(actionChoice <= 19) {
+					if(!inAir) walk((int)Math.random() * 3 + 3);
+				}
+				else if(actionChoice <= 49) {
+					if(!inAir)claw();
+				}
 				else if(actionChoice <= 69) {
-					if(!inAir)fireball();
+					if(!inAir) fireball();
 					else flyFireball();
 				}
-				else if(actionChoice <= 89) jump();
-				else if(actionChoice <= 99) fly();
+				else if(actionChoice <= 89) {
+					if(!inAir) jump();
+				}
+				else if(actionChoice <= 99) {
+					if(!inAir) fly();
+				}
 			}
 		}
 		
@@ -76,7 +84,7 @@ public class Enemy implements ActorGeneric {
 		
 		if(currentAction == EnemyActions.claw) {
 			if(duration-- >= 0) {
-				if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) spri.translateX(2);
+				if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) setHit(100, 50, (int) spri.getX() + 150, (int) spri.getY() + 50);
 				else setHit(50, 50, (int) spri.getX() - 20, (int) spri.getY() + 50);
 			}
 		}
