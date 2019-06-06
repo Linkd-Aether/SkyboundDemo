@@ -54,7 +54,7 @@ public class Enemy implements ActorGeneric {
 				framesIdle = 0;
 				actionChoice = (int) (Math.random() * 100);
 				if(actionChoice <= 19) {
-					if(!inAir) walk((int)Math.random() * 3 + 3);
+					if(!inAir) walk((int)Math.random() * 100 + 60);
 				}
 				else if(actionChoice <= 49) {
 					if(!inAir)claw();
@@ -68,6 +68,7 @@ public class Enemy implements ActorGeneric {
 				}
 				else if(actionChoice <= 99) {
 					if(!inAir) fly();
+					else currentAction = EnemyActions.idle;
 				}
 			}
 		}
@@ -80,13 +81,44 @@ public class Enemy implements ActorGeneric {
 				else if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) spri.translateX(2);
 				else spri.translateX(-2);
 			}
+			if(duration <= 0) {
+				currentAction = EnemyActions.idle;
+			}
 		}
 		
 		if(currentAction == EnemyActions.claw) {
-			if(duration-- >= 0) {
+			if(duration-- == 140 || duration == 80 || duration == 20) {
+				hit.setActive(true);
 				if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) setHit(100, 50, (int) spri.getX() + 150, (int) spri.getY() + 50);
 				else setHit(50, 50, (int) spri.getX() - 20, (int) spri.getY() + 50);
 			}
+			if(duration == 120 || duration == 60 || duration == 0) {
+				hit.setActive(false);
+			}
+			if(duration <= 0) {
+				currentAction = EnemyActions.idle;
+			}
+		}
+		
+		if(currentAction == EnemyActions.fireball) {
+			currentAction = EnemyActions.idle;
+		}
+		
+		if(currentAction == EnemyActions.jump) {
+			inAir = true;
+			currentAction = EnemyActions.idle;
+		}
+		
+		if(currentAction == EnemyActions.fly) {
+			currentAction = EnemyActions.idle;
+		}
+		
+		if(inAir) { spri.translateY((float) airMomentum); airMomentum -= 1.0; }
+		
+		
+		if(spri.getY() < 0) {
+			spri.setY(0);
+			inAir = false;
 		}
 	}
 
@@ -134,8 +166,8 @@ public class Enemy implements ActorGeneric {
 	}
 	
 	public void jump() {
-		duration = 180;
 		currentAction = EnemyActions.jump;
+		
 		System.out.println(currentAction);
 	}
 	

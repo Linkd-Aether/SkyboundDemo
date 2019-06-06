@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.skybound.demo.Actors.Enemy;
+import com.skybound.demo.Actors.Fireball;
 import com.skybound.demo.Actors.PlayerChar;
 import com.skybound.demo.specialRects.Hitbox;
 import com.badlogic.gdx.math.Rectangle;
@@ -30,9 +31,13 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	public static Enemy foe;
 	Texture enemyTxtr;
 	Sprite enemySpr;
-	Texture debugBox2;
+	
+	public static Fireball fb;
+	Texture fbTxtr;
+	Sprite fbSpr;
 	
 	boolean debug = true;
+	Texture debugBox2;
 	Texture debugBox;
 	Hitbox tempHit;
 	
@@ -83,6 +88,10 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 		playerTxtr.dispose();
+		enemyTxtr.dispose();
+//		fbTxtr.dispose();
+		debugBox.dispose();
+		debugBox2.dispose();
 	}
 	
 	private void SetupActors(){
