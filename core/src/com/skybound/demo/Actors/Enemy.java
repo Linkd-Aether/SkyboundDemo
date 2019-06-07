@@ -95,9 +95,7 @@ public class Enemy implements ActorGeneric {
 			if(duration == 120 || duration == 60 || duration == 0) {
 				hit.setActive(false);
 			}
-			if(duration <= 0) {
-				currentAction = EnemyActions.idle;
-			}
+			if(duration <= 0) currentAction = EnemyActions.idle;
 		}
 		
 		if(currentAction == EnemyActions.fireball) {
@@ -106,6 +104,7 @@ public class Enemy implements ActorGeneric {
 				if(facingRight) SkyboundDemoMain.fb.set((int) spri.getX() + 100, (int) spri.getY(), 0, 10);
 				else SkyboundDemoMain.fb.set((int) spri.getX(), (int) spri.getY(), 0, 10);
 			}
+			if(duration <= 0) currentAction = EnemyActions.idle;
 		}
 		
 		if(currentAction == EnemyActions.jump) {
@@ -127,6 +126,9 @@ public class Enemy implements ActorGeneric {
 				airMomentum = 0;
 			}
 			
+			if(duration == 180 || duration == 300 || duration == 420) {
+				flyFireball();
+			}
 			
 		}
 		
@@ -217,9 +219,7 @@ public class Enemy implements ActorGeneric {
 	public void flyFireball() {
 		if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) rightCheck(true);
 		else rightCheck(false);
-		duration = 120;
-		currentAction = EnemyActions.flyFireball;
-		System.out.println(currentAction);
+		System.out.println("flyFireball");
 	}
 	
 }
