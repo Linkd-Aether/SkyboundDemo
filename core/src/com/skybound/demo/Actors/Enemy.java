@@ -219,6 +219,8 @@ public class Enemy implements ActorGeneric {
 	public void flyFireball() {
 		if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) rightCheck(true);
 		else rightCheck(false);
+		if(facingRight) SkyboundDemoMain.fb.set((int) spri.getX() + 100, (int) spri.getY(), 0, 10);
+		else SkyboundDemoMain.fb.set((int) spri.getX(), (int) spri.getY(), 0, 10);
 		System.out.println("flyFireball");
 	}
 	
