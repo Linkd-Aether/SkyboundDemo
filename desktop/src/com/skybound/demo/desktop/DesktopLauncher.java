@@ -11,7 +11,7 @@ public class DesktopLauncher {
 //		config.fullscreen = true;
 		config.disableAudio = true;
 		config.title = "TESTTEST";
-//		config.addIcon("core\\assets\\TEMPICON.png", Files.FileType.Local);
+		config.addIcon("TEMPICON.png", Files.FileType.Internal);
 		new LwjglApplication(new SkyboundDemoMain(), config);
 	}
 }

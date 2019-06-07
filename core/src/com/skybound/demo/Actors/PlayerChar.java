@@ -93,7 +93,7 @@ public class PlayerChar implements ActorGeneric {
 		}
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(7);
-			if(spri.getX() >= 500) spri.setX(500);
+			if(spri.getX() >= 550) spri.setX(550);
 			if(!inAir && !facingRight) spri.flip(true, false);
 			if(!inAir) facingRight = true;
 		}
@@ -109,7 +109,7 @@ public class PlayerChar implements ActorGeneric {
 			hasAirAttacked = false;
 			spri.setRotation(0);
 		}
-				
+		
 		if(Gdx.input.isKeyJustPressed(Input.Keys.Z) && currentAction == PlayerActions.idle) {
 			
 			spri.setRotation(0);
@@ -125,6 +125,7 @@ public class PlayerChar implements ActorGeneric {
 					setLags(3, 15, 5);
 				}
 				else {
+					changeSprite("AyanaUTilt-1.png");
 					currentAction = PlayerActions.upTilt;
 					setLags(5, 20, 5);
 				}

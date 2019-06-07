@@ -54,8 +54,8 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		playerSpr = new Sprite(playerTxtr);
 		enemyTxtr = new Texture("GrimaNeutralBlue-1.png");
 		enemySpr = new Sprite(enemyTxtr);
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800, 800);
+//		camera = new OrthographicCamera();
+//		camera.setToOrtho(false, 800, 800);
 		batch = new SpriteBatch();
 		debugBox = new Texture("debug.png");
 		debugBox2 = new Texture("debug2.png");
@@ -78,6 +78,14 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		if(foe.getHitbox().getActive() && debug) {
 			tempHit = foe.getHitbox();
 			batch.draw(debugBox2, tempHit.getX(), tempHit.getY(), tempHit.getWidth(), tempHit.getHeight());
+		}
+		if(debug) {
+			tempHit = mc.getHitbox();
+			batch.draw(debugBox, mc.getX(), mc.getY(), 1, 800);
+		}
+		if(debug) {
+			tempHit = foe.getHitbox();
+			batch.draw(debugBox2, foe.getX(), foe.getY(), 1, 800);
 		}
 		batch.end();
 		mc.update();

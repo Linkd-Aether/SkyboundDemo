@@ -78,8 +78,14 @@ public class Enemy implements ActorGeneric {
 				if(Math.abs(SkyboundDemoMain.mc.getSprite().getX() - (getX() + 150)) < 20) {
 					claw();
 				}
-				else if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) spri.translateX(2);
-				else spri.translateX(-2);
+				else if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) {
+					rightCheck(true);
+					spri.translateX(2);
+				}
+				else {
+					rightCheck(false);
+					spri.translateX(-2);
+				}
 			}
 			if(duration <= 0) {
 				currentAction = EnemyActions.idle;
@@ -89,8 +95,14 @@ public class Enemy implements ActorGeneric {
 		if(currentAction == EnemyActions.claw) {
 			if(duration-- == 140 || duration == 80 || duration == 20) {
 				hit.setActive(true);
-				if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) setHit(100, 50, (int) spri.getX() + 150, (int) spri.getY() + 50);
-				else setHit(50, 50, (int) spri.getX() - 20, (int) spri.getY() + 50);
+				if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) {
+					rightCheck(true);
+					setHit(100, 50, 150, 50);
+				}
+				else {
+					rightCheck(false);
+					setHit(100, 50, -20, 50);
+				}
 			}
 			if(duration == 120 || duration == 60 || duration == 0) {
 				hit.setActive(false);
@@ -105,8 +117,8 @@ public class Enemy implements ActorGeneric {
 		}
 		
 		if(currentAction == EnemyActions.jump) {
-			inAir = true;
-			currentAction = EnemyActions.idle;
+			if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) spri.translateX(2);
+			else spri.translateX(-2);
 		}
 		
 		if(currentAction == EnemyActions.fly) {
@@ -117,9 +129,12 @@ public class Enemy implements ActorGeneric {
 		
 		
 		if(spri.getY() < 0) {
+			currentAction = EnemyActions.idle;
 			spri.setY(0);
 			inAir = false;
 		}
+		
+		
 	}
 
 	@Override
@@ -146,6 +161,13 @@ public class Enemy implements ActorGeneric {
 		duration = dur;
 		endLag = end;
 	}
+	
+	void rightCheck(boolean right) {
+		if(facingRight != right) {
+			spri.flip(true, false);
+		}
+		facingRight = right;
+	}
 
 	public void walk(int frames) {
 		duration = frames;
@@ -166,8 +188,11 @@ public class Enemy implements ActorGeneric {
 	}
 	
 	public void jump() {
+		if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) rightCheck(true);
+		else rightCheck(false);
 		currentAction = EnemyActions.jump;
-		
+		inAir = true;
+		airMomentum = 25;
 		System.out.println(currentAction);
 	}
 	
