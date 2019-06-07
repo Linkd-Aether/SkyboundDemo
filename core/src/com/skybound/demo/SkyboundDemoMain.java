@@ -54,6 +54,8 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		playerSpr = new Sprite(playerTxtr);
 		enemyTxtr = new Texture("GrimaNeutralBlue-1.png");
 		enemySpr = new Sprite(enemyTxtr);
+		fbTxtr = new Texture("Fireball-1.png");
+		fbSpr = new Sprite(fbTxtr);
 //		camera = new OrthographicCamera();
 //		camera.setToOrtho(false, 800, 800);
 		batch = new SpriteBatch();
@@ -71,6 +73,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		batch.begin();
 		foe.getSprite().draw(batch);
 		mc.getSprite().draw(batch);
+		if(fb.getActive()) fb.getSprite().draw(batch);
 		if(mc.getHitbox().getActive() && debug) {
 			tempHit = mc.getHitbox();
 			batch.draw(debugBox, tempHit.getX(), tempHit.getY(), tempHit.getWidth(), tempHit.getHeight());
@@ -90,6 +93,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		batch.end();
 		mc.update();
 		foe.update();
+		fb.update();
 	}
 	
 	@Override
@@ -105,5 +109,6 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	private void SetupActors(){
 		mc = new PlayerChar(playerTxtr, playerSpr);
 		foe = new Enemy(enemyTxtr, enemySpr);
+		fb = new Fireball(fbTxtr, fbSpr);
 	}
 }

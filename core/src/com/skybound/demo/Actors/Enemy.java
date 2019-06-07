@@ -50,26 +50,14 @@ public class Enemy implements ActorGeneric {
 	public void update() {
 		if(currentAction == EnemyActions.idle) {
 			framesIdle++;
-			if(framesIdle % 10 == 0 && Math.random() * 1200 <= framesIdle) {
+			if(!inAir && framesIdle % 10 == 0 && Math.random() * 1200 <= framesIdle) {
 				framesIdle = 0;
 				actionChoice = (int) (Math.random() * 100);
-				if(actionChoice <= 19) {
-					if(!inAir) walk((int)Math.random() * 100 + 60);
-				}
-				else if(actionChoice <= 49) {
-					if(!inAir)claw();
-				}
-				else if(actionChoice <= 69) {
-					if(!inAir) fireball();
-					else flyFireball();
-				}
-				else if(actionChoice <= 89) {
-					if(!inAir) jump();
-				}
-				else if(actionChoice <= 99) {
-					if(!inAir) fly();
-					else currentAction = EnemyActions.idle;
-				}
+				if(actionChoice <= 19) walk((int)Math.random() * 100 + 60);
+				else if(actionChoice <= 49) claw();
+				else if(actionChoice <= 69) fireball();
+				else if(actionChoice <= 89) jump();
+				else if(actionChoice <= 99) fly();
 			}
 		}
 		
@@ -113,16 +101,33 @@ public class Enemy implements ActorGeneric {
 		}
 		
 		if(currentAction == EnemyActions.fireball) {
-			currentAction = EnemyActions.idle;
+			if(duration-- == 60) {
+				SkyboundDemoMain.fb.setActive(true);
+				if(facingRight) SkyboundDemoMain.fb.set((int) spri.getX() + 100, (int) spri.getY(), 0, 10);
+				else SkyboundDemoMain.fb.set((int) spri.getX(), (int) spri.getY(), 0, 10);
+			}
 		}
 		
 		if(currentAction == EnemyActions.jump) {
+			hit.setActive(true);
+			if(airMomentum > 0) setHit(200, 100, 0, 100);
+			else setHit(200, 100, 0, 0);
+			
 			if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) spri.translateX(2);
 			else spri.translateX(-2);
 		}
 		
 		if(currentAction == EnemyActions.fly) {
-			currentAction = EnemyActions.idle;
+			hit.setActive(true);
+			if(airMomentum > 0) setHit(200, 100, 0, 100);
+			else if(airMomentum < -1)setHit(200, 100, 0, 0);
+			else hit.setActive(false);
+			if(duration-- > 0 && airMomentum <= 0) if(spri.getY() <= 200) {
+				spri.setY(200);
+				airMomentum = 0;
+			}
+			
+			
 		}
 		
 		if(inAir) { spri.translateY((float) airMomentum); airMomentum -= 1.0; }
@@ -132,6 +137,7 @@ public class Enemy implements ActorGeneric {
 			currentAction = EnemyActions.idle;
 			spri.setY(0);
 			inAir = false;
+			hit.setActive(false);
 		}
 		
 		
@@ -182,6 +188,8 @@ public class Enemy implements ActorGeneric {
 	}
 	
 	public void fireball() {
+		if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) rightCheck(true);
+		else rightCheck(false);
 		duration = 120;
 		currentAction = EnemyActions.fireball;
 		System.out.println(currentAction);
@@ -197,13 +205,18 @@ public class Enemy implements ActorGeneric {
 	}
 	
 	public void fly() {
+		if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) rightCheck(true);
+		else rightCheck(false);
 		duration = 600;
 		currentAction = EnemyActions.fly;
 		System.out.println(currentAction);
 		inAir = true;
+		airMomentum = 25;
 	}
 	
 	public void flyFireball() {
+		if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) rightCheck(true);
+		else rightCheck(false);
 		duration = 120;
 		currentAction = EnemyActions.flyFireball;
 		System.out.println(currentAction);
