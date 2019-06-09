@@ -101,8 +101,8 @@ public class Enemy implements ActorGeneric {
 		if(currentAction == EnemyActions.fireball) {
 			if(duration-- == 60) {
 				SkyboundDemoMain.fb.setActive(true);
-				if(facingRight) SkyboundDemoMain.fb.set((int) spri.getX() + 100, (int) spri.getY(), 0, 10);
-				else SkyboundDemoMain.fb.set((int) spri.getX(), (int) spri.getY(), 0, 10);
+				if(facingRight) SkyboundDemoMain.fb.set((int) spri.getX() + 100, (int) spri.getY() + 75, 0, 10);
+				else SkyboundDemoMain.fb.set((int) spri.getX(), (int) spri.getY() + 75, 180, 10);
 			}
 			if(duration <= 0) currentAction = EnemyActions.idle;
 		}
@@ -127,7 +127,7 @@ public class Enemy implements ActorGeneric {
 			}
 			
 			if(duration == 180 || duration == 300 || duration == 420) {
-				flyFireball();
+				if(Math.random() > .5)flyFireball();
 			}
 			
 		}

@@ -254,8 +254,8 @@ public class PlayerChar implements ActorGeneric {
 			}
 		}
 		
-		if(!invulnerable && (spri.getBoundingRectangle().overlaps(Enemy.hit) && Enemy.hit.getActive()) || 
-				(spri.getBoundingRectangle().overlaps(Fireball.hit) && Fireball.hit.getActive())) takeDamage();
+		if(!invulnerable && ((spri.getBoundingRectangle().overlaps(Enemy.hit) && Enemy.hit.getActive()) || 
+				(spri.getBoundingRectangle().overlaps(Fireball.hit) && Fireball.hit.getActive()))) takeDamage();
 		
 		if(currentAction == PlayerActions.takeDamage && framesSinceLastAction >= 30) currentAction = PlayerActions.idle;
 		

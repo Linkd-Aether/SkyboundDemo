@@ -16,19 +16,22 @@ public class Fireball {
 	public Fireball(Texture txtr, Sprite spr) {
 		hit = new Hitbox();
 		spri = spr;
+		spri.setBounds(spri.getX(), spri.getY(), 100, 70);
 		spri.setOriginCenter();
 	}
 	
 	public void set(int x, int y, int angle, int speed) {
 		ang = angle;
 		spd = speed;
+		spri.setX(x);
+		spri.setY(y);
 	}
 
 	public void update() {
 		if(active) {
 			spri.setRotation(ang);
-			spri.translateX((float) (Math.cos(ang) * spd));
-			spri.translateY((float) (Math.sin(ang) * spd));
+			spri.translateX((float) (Math.cos(ang * (Math.PI / 180)) * spd));
+			spri.translateY((float) (Math.sin(ang * (Math.PI / 180)) * spd));
 			hit.setActive(active);
 			hit.set(spri.getX(), spri.getY(), spri.getWidth(), spri.getHeight());
 		}

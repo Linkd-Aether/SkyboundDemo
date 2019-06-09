@@ -101,7 +101,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		batch.dispose();
 		playerTxtr.dispose();
 		enemyTxtr.dispose();
-//		fbTxtr.dispose();
+		fbTxtr.dispose();
 		debugBox.dispose();
 		debugBox2.dispose();
 	}
