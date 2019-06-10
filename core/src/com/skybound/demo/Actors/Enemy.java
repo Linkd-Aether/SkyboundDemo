@@ -10,10 +10,12 @@ public class Enemy implements ActorGeneric {
 	Texture txtr;
 	public static Hitbox hit;
 	Sprite spri;
-	EnemyActions currentAction = EnemyActions.idle;
+	static EnemyActions currentAction = EnemyActions.idle;
 	boolean inAir = false;
 	boolean facingRight = true;
+	boolean invulnerable = false;
 	double airMomentum;
+	int framesInvulnerable = 0;
 	int actionChoice = 0;
 	int startLag = 0;
 	int duration = 0;
@@ -21,7 +23,7 @@ public class Enemy implements ActorGeneric {
 	int framesIdle = 0;
 	int hitX = 0;
 	int hitY = 0;
-	
+	int hp = 200;
 	
 	public Enemy(Texture txt, Sprite spr) {
 		txtr = txt;
@@ -48,6 +50,11 @@ public class Enemy implements ActorGeneric {
 
 	@Override
 	public void update() {
+		
+		if(hp <= 0) {
+			System.out.println("GAME WIN");
+		}
+		
 		if(currentAction == EnemyActions.idle) {
 			framesIdle++;
 			if(!inAir && framesIdle % 10 == 0 && Math.random() * 1200 <= framesIdle) {
@@ -135,14 +142,34 @@ public class Enemy implements ActorGeneric {
 		if(inAir) { spri.translateY((float) airMomentum); airMomentum -= 1.0; }
 		
 		
-		if(spri.getY() < 0) {
+		if(spri.getY() < 1) {
 			currentAction = EnemyActions.idle;
-			spri.setY(0);
+			spri.setY(1);
 			inAir = false;
 			hit.setActive(false);
 		}
 		
+		if(!invulnerable && ((spri.getBoundingRectangle().overlaps(PlayerChar.hit) && PlayerChar.hit.getActive()))) takeDamage();
 		
+		if(invulnerable) framesInvulnerable++;
+		
+		if(framesInvulnerable >= 30) {
+			invulnerable = false;
+			spri.setAlpha(1);
+		}
+		
+		System.out.println(Math.atan((SkyboundDemoMain.mc.getX() - spri.getX()) / (spri.getY() - SkyboundDemoMain.mc.getY())) + (Math.PI/2));
+	}
+
+	private void takeDamage() {
+		invulnerable = true;
+		framesInvulnerable = 0;
+		System.out.println("HIT");
+		spri.setAlpha((float) .5);
+		if(PlayerChar.currentAction == PlayerActions.sideTilt || PlayerChar.currentAction == PlayerActions.upTilt) hp -= 6;
+		if(PlayerChar.currentAction == PlayerActions.downTilt) hp -= 3;
+		if(PlayerChar.currentAction == PlayerActions.forwardAir || PlayerChar.currentAction == PlayerActions.backAir) hp -= 4;
+		if(PlayerChar.currentAction == PlayerActions.downAir || PlayerChar.currentAction == PlayerActions.upAir) hp -= 5;
 	}
 
 	@Override

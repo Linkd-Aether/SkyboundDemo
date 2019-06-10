@@ -10,7 +10,7 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 //		config.fullscreen = true;
 		config.disableAudio = true;
-		config.title = "TESTTEST";
+		config.title = "Game Demo";
 		config.addIcon("TEMPICON.png", Files.FileType.Internal);
 		new LwjglApplication(new SkyboundDemoMain(), config);
 	}

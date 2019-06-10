@@ -9,7 +9,7 @@ public class Fireball {
 	Sprite spri;
 	Texture txtr;
 	public static Hitbox hit;
-	boolean active = false;
+	static boolean active = false;
 	int ang;
 	int spd;
 	
@@ -32,9 +32,10 @@ public class Fireball {
 			spri.setRotation(ang);
 			spri.translateX((float) (Math.cos(ang * (Math.PI / 180)) * spd));
 			spri.translateY((float) (Math.sin(ang * (Math.PI / 180)) * spd));
-			hit.setActive(active);
 			hit.set(spri.getX(), spri.getY(), spri.getWidth(), spri.getHeight());
 		}
+		if(spri.getX() >= 600 || spri.getX() <= -100 || spri.getY() >= 500 || spri.getY() <= -100) active = false;
+		hit.setActive(active);
 	}
 	
 	public Sprite getSprite() {

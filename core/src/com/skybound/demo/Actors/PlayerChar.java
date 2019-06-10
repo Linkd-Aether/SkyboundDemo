@@ -11,9 +11,9 @@ import com.skybound.demo.specialRects.Hitbox;
 public class PlayerChar implements ActorGeneric {
 
 	Texture txtr;
-	Hitbox hit;
+	static Hitbox hit;
 	Sprite spri;
-	PlayerActions currentAction = PlayerActions.idle;
+	static PlayerActions currentAction = PlayerActions.idle;
 	boolean inAir = false;
 	boolean facingRight = true;
 	boolean invulnerable = false;
@@ -28,6 +28,7 @@ public class PlayerChar implements ActorGeneric {
 	int endLag = 0;
 	int hitX = 0;
 	int hitY = 0;
+	int hp = 100;
 	
 	public PlayerChar(Texture txt, Sprite spr) {
 		txtr = txt;
@@ -77,10 +78,15 @@ public class PlayerChar implements ActorGeneric {
 		framesInvulnerable = 0;
 		System.out.println("HIT");
 		spri.setAlpha((float) .5);
+		if(Fireball.active) hp -= 10;
+		else if(Enemy.currentAction == EnemyActions.claw) hp -= 5;
+		else if(Enemy.currentAction == EnemyActions.jump || Enemy.currentAction == EnemyActions.fly) hp -= 10;
 	}
 	
 	@Override
 	public void update() {
+		
+		if(hp <= 0) System.out.println("GAME OVER");
 		
 		framesSinceLastAction++;
 		
