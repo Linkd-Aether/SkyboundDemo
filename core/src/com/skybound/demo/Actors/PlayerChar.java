@@ -6,6 +6,7 @@ import com.badlogic.gdx.controllers.mappings.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
+import com.skybound.demo.SkyboundDemoMain;
 import com.skybound.demo.specialRects.Hitbox;
 
 public class PlayerChar implements ActorGeneric {
@@ -23,12 +24,13 @@ public class PlayerChar implements ActorGeneric {
 	int framesInvulnerable = 0;
 	int frameAirSpin = 0;
 	int idleCount = 1;
+	int runCycle = 0;
 	int duration = 0;
 	int startLag = 0;
 	int endLag = 0;
 	int hitX = 0;
 	int hitY = 0;
-	int hp = 100;
+	public int hp = 100;
 	
 	public PlayerChar(Texture txt, Sprite spr) {
 		txtr = txt;
@@ -86,19 +88,37 @@ public class PlayerChar implements ActorGeneric {
 	@Override
 	public void update() {
 		
-		if(hp <= 0) System.out.println("GAME OVER");
+		if(hp <= 0) SkyboundDemoMain.endGame(false);
 		
 		framesSinceLastAction++;
 		
 		startLag--;
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(-7);
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(-8);
+			if(runCycle < 4 && !inAir) {
+				changeSprite("AyanaRun-1.png");
+				runCycle++;
+			}
+			else if(runCycle >= 4 && !inAir) {
+				changeSprite("AyanaRun-2.png");
+				runCycle++;
+			}
+			if(runCycle == 7) runCycle = 0;
 			if(spri.getX() <= 0) spri.setX(0);
 			if(!inAir && facingRight) spri.flip(true, false);
 			if(!inAir) facingRight = false;
 		}
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(7);
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(8);
+			if(runCycle < 4 && !inAir) {
+				changeSprite("AyanaRun-1.png");
+				runCycle++;
+			}
+			else if(runCycle >= 4 && !inAir) {
+				changeSprite("AyanaRun-2.png");
+				runCycle++;
+			}
+			if(runCycle == 7) runCycle = 0;
 			if(spri.getX() >= 550) spri.setX(550);
 			if(!inAir && !facingRight) spri.flip(true, false);
 			if(!inAir) facingRight = true;
@@ -253,7 +273,7 @@ public class PlayerChar implements ActorGeneric {
 		}
 		
 		if(framesSinceLastAction >= duration) {
-			if(inAir && hasAirAttacked) changeSprite("AyanaNeutral-1.png");
+			if(inAir && hasAirAttacked && !Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) changeSprite("AyanaNeutral-1.png");
 			hit.setActive(false);
 			if(endLag-- == 0) {
 				currentAction = PlayerActions.idle;
@@ -272,7 +292,7 @@ public class PlayerChar implements ActorGeneric {
 			spri.setAlpha(1);
 		}
 		
-		if(currentAction == PlayerActions.idle) {
+		if(currentAction == PlayerActions.idle && !Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 			if(!inAir) changeSprite("AyanaNeutral-" + (idleCount++ / 20 + 1) + ".png");
 		}
 		

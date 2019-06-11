@@ -41,6 +41,13 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	Texture debugBox;
 	Hitbox tempHit;
 	
+	Texture mCHPContainer;
+	Rectangle foeHPContainer;
+	Rectangle foeHPBar;
+	
+	static boolean gameUpdate = true;
+	Texture endText;
+	
 	@Override
 	public void create () {
 		
@@ -61,6 +68,8 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		debugBox = new Texture("debug.png");
 		debugBox2 = new Texture("debug2.png");
+		
+		mCHPContainer = new Texture("AyanaHealthBar-1.png");
 //		Music music = Gdx.audio.newMusic(Gdx.files.internal("Wake.mp3"));
 //		music.play();
 		SetupActors();
@@ -90,10 +99,17 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 			tempHit = foe.getHitbox();
 			batch.draw(debugBox2, foe.getX(), foe.getY(), 1, 800);
 		}
+		
+		batch.draw(debugBox2, 40, 255, 20, 140 - (int)((100 - mc.hp) * 1.4));
+		batch.draw(mCHPContainer, -50, 250);
+		
 		batch.end();
-		mc.update();
-		foe.update();
-		fb.update();
+		
+		if(gameUpdate) {
+			mc.update();
+			foe.update();
+			fb.update();
+		}
 	}
 	
 	@Override
@@ -110,5 +126,11 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		mc = new PlayerChar(playerTxtr, playerSpr);
 		foe = new Enemy(enemyTxtr, enemySpr);
 		fb = new Fireball(fbTxtr, fbSpr);
+	}
+
+	public static void endGame(boolean win) {
+		gameUpdate = false;
+		if(win); 
+		else;
 	}
 }
