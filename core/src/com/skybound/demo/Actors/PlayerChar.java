@@ -2,6 +2,7 @@ package com.skybound.demo.Actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.mappings.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -78,7 +79,6 @@ public class PlayerChar implements ActorGeneric {
 		airMomentum = 10;
 		framesSinceLastAction = 0;
 		framesInvulnerable = 0;
-		System.out.println("HIT");
 		spri.setAlpha((float) .5);
 		if(Fireball.active) hp -= 10;
 		else if(Enemy.currentAction == EnemyActions.claw) hp -= 5;
@@ -94,7 +94,7 @@ public class PlayerChar implements ActorGeneric {
 		
 		startLag--;
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(-8);
+		if((Gdx.input.isKeyPressed(Input.Keys.LEFT) || joystickCheck("left")) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(-8);
 			if(runCycle < 4 && !inAir) {
 				changeSprite("AyanaRun-1.png");
 				runCycle++;
@@ -109,7 +109,7 @@ public class PlayerChar implements ActorGeneric {
 			if(!inAir) facingRight = false;
 		}
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(8);
+		if((Gdx.input.isKeyPressed(Input.Keys.RIGHT) || joystickCheck("right")) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(8);
 			if(runCycle < 4 && !inAir) {
 				changeSprite("AyanaRun-1.png");
 				runCycle++;
@@ -124,7 +124,7 @@ public class PlayerChar implements ActorGeneric {
 			if(!inAir) facingRight = true;
 		}
 		
-		if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && !inAir && currentAction == PlayerActions.idle) { inAir = true; airMomentum = 20; }
+		if((Gdx.input.isKeyPressed(Input.Keys.SPACE) || (!Controllers.getControllers().isEmpty() && Controllers.getControllers().get(0).getButton(3))) && !inAir && currentAction == PlayerActions.idle) { inAir = true; airMomentum = 20; }
 		
 		if(inAir) { spri.translateY((float) airMomentum); airMomentum -= 1.0; }
 		
@@ -136,17 +136,18 @@ public class PlayerChar implements ActorGeneric {
 			spri.setRotation(0);
 		}
 		
-		if(Gdx.input.isKeyJustPressed(Input.Keys.Z) && currentAction == PlayerActions.idle) {
+		if((Gdx.input.isKeyJustPressed(Input.Keys.Z) || (!Controllers.getControllers().isEmpty() && Controllers.getControllers().get(0).getButton(1))) && currentAction == PlayerActions.idle) {
 			
 			spri.setRotation(0);
 			
 			framesSinceLastAction = 0;
 			
 			//Up attacks
-			if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+			if(Gdx.input.isKeyPressed(Input.Keys.UP) || joystickCheck("up")) {
 				setHit(75, 60, 20, 75);
 				if(inAir) {
 					hasAirAttacked = true;
+					changeSprite("AyanaUAir-1.png");
 					currentAction = PlayerActions.upAir;
 					setLags(3, 15, 5);
 				}
@@ -158,7 +159,7 @@ public class PlayerChar implements ActorGeneric {
 			}
 			
 			//Down attacks
-			else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+			else if(Gdx.input.isKeyPressed(Input.Keys.DOWN) || joystickCheck("down")) {
 				if(inAir) {
 					setHit(60, 50, 20, -20);
 					hasAirAttacked = true;
@@ -178,9 +179,10 @@ public class PlayerChar implements ActorGeneric {
 			//Side attacks
 			else if(facingRight) {
 				if(inAir) {
-					if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+					if(Gdx.input.isKeyPressed(Input.Keys.LEFT) || joystickCheck("left")) {
 						setHit(70, 40, -20, 20);
 						hasAirAttacked = true;
+						changeSprite("AyanaBAir-1.png");
 						currentAction = PlayerActions.backAir;
 						setLags(5, 20, 8);
 					}
@@ -194,15 +196,17 @@ public class PlayerChar implements ActorGeneric {
 				}
 				else {
 					setHit(60, 70, 60, 20);
+					changeSprite("AyanaFTilt-1.png");
 					currentAction = PlayerActions.sideTilt;
 					setLags(6, 20, 8);
 				}
 			}
 			else {
 				if(inAir) {
-					if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+					if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) || joystickCheck("right")) {
 						setHit(70, 40, 60, 20);
 						hasAirAttacked = true;
+						changeSprite("AyanaBAir-1.png");
 						currentAction = PlayerActions.backAir;
 						setLags(5, 20, 8);
 					}
@@ -216,6 +220,7 @@ public class PlayerChar implements ActorGeneric {
 				}
 				else {
 					setHit(60, 70, -20, 20);
+					changeSprite("AyanaFTilt-1.png");
 					currentAction = PlayerActions.sideTilt;
 					setLags(6, 20, 8);
 				}
@@ -265,7 +270,6 @@ public class PlayerChar implements ActorGeneric {
 				spri.setRotation(frameAirSpin++ * 90);
 				
 			}
-			
 		}
 		
 		if(startLag == 0) {
@@ -273,7 +277,6 @@ public class PlayerChar implements ActorGeneric {
 		}
 		
 		if(framesSinceLastAction >= duration) {
-			if(inAir && hasAirAttacked && !Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) changeSprite("AyanaNeutral-1.png");
 			hit.setActive(false);
 			if(endLag-- == 0) {
 				currentAction = PlayerActions.idle;
@@ -292,12 +295,29 @@ public class PlayerChar implements ActorGeneric {
 			spri.setAlpha(1);
 		}
 		
-		if(currentAction == PlayerActions.idle && !Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+		if(currentAction == PlayerActions.idle && (!Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !joystickCheck("left") && !joystickCheck("right") || inAir)) {
 			if(!inAir) changeSprite("AyanaNeutral-" + (idleCount++ / 20 + 1) + ".png");
+			else changeSprite("AyanaFalling-1.png");
 		}
 		
 		if(idleCount == 60) idleCount = 0;
 		
+	}
+	
+	boolean joystickCheck(String dir) {
+		if(Controllers.getControllers().isEmpty()) return false;
+		
+		double y = Controllers.getControllers().get(0).getAxis(0);
+		if(y < .2 && y > -.2) y = 0;
+		
+		double x = Controllers.getControllers().get(0).getAxis(1);
+		if(x < .2 && x > -.2) x = 0;
+		
+		if(dir == "right" && x > y && x > 0) return true;
+		if(dir == "left" && x < y && x < 0) return true;
+		if(dir == "down" && y > x && y > 0) return true;
+		if(dir == "up" && y < x && y < 0) return true;
+		return false;
 	}
 	
 	@Override

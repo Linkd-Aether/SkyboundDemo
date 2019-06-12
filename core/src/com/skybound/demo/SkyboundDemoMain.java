@@ -4,6 +4,8 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -36,43 +38,44 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	Texture fbTxtr;
 	Sprite fbSpr;
 	
-	boolean debug = true;
+	boolean debug = false;
+	Texture debugBox3;
 	Texture debugBox2;
 	Texture debugBox;
 	Hitbox tempHit;
 	
 	Texture mCHPContainer;
-	Rectangle foeHPContainer;
-	Rectangle foeHPBar;
+	Texture foeHPContainer;
+	
+	Texture background;
 	
 	static boolean gameUpdate = true;
-	Texture endText;
+	static Texture endText;
 	
 	@Override
 	public void create () {
 		
-//		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("perpetua.tff"));
-//		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-//		parameter.size = 12;
-//		BitmapFont font12 = generator.generateFont(parameter); // font size 12 pixels
-//		generator.dispose(); // don't forget to dispose to avoid memory leaks!
-		
+		background = new Texture("Background-1.png");
 		playerTxtr = new Texture("AyanaNeutral-1.png");
 		playerSpr = new Sprite(playerTxtr);
 		enemyTxtr = new Texture("GrimaNeutralBlue-1.png");
 		enemySpr = new Sprite(enemyTxtr);
 		fbTxtr = new Texture("Fireball-1.png");
 		fbSpr = new Sprite(fbTxtr);
-//		camera = new OrthographicCamera();
-//		camera.setToOrtho(false, 800, 800);
 		batch = new SpriteBatch();
 		debugBox = new Texture("debug.png");
 		debugBox2 = new Texture("debug2.png");
-		
+		debugBox3 = new Texture("debug3.png");
 		mCHPContainer = new Texture("AyanaHealthBar-1.png");
-//		Music music = Gdx.audio.newMusic(Gdx.files.internal("Wake.mp3"));
-//		music.play();
+		foeHPContainer = new Texture("DragonHealthBar-1.png");
+		endText = new Texture("debug.png");
 		SetupActors();
+		
+		int i = 0;
+		for (Controller controller : Controllers.getControllers()) {
+			System.out.println("#" + i++ + ": " + controller.getName());
+		}
+		if (Controllers.getControllers().size == 0) System.out.println("No controllers attached");
 	}
 
 	@Override
@@ -80,6 +83,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
+		batch.draw(background, 0, 0, 640, 480);
 		foe.getSprite().draw(batch);
 		mc.getSprite().draw(batch);
 		if(fb.getActive()) fb.getSprite().draw(batch);
@@ -100,16 +104,21 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 			batch.draw(debugBox2, foe.getX(), foe.getY(), 1, 800);
 		}
 		
-		batch.draw(debugBox2, 40, 255, 20, 140 - (int)((100 - mc.hp) * 1.4));
+		if(mc.hp > 0)batch.draw(debugBox2, 40, 255, 20, 140 - (int)((100 - mc.hp) * 1.4));
 		batch.draw(mCHPContainer, -50, 250);
 		
-		batch.end();
+		if(foe.hp > 0) batch.draw(debugBox3, 190 + (200 - foe.hp) * 2, 410, 400 - (200 - foe.hp) * 2, 30);
+		
+		batch.draw(foeHPContainer, 100, 200);
 		
 		if(gameUpdate) {
 			mc.update();
 			foe.update();
 			fb.update();
 		}
+		else batch.draw(endText, 225, 250, 200, 43);
+		
+		batch.end();
 	}
 	
 	@Override
@@ -120,6 +129,11 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		fbTxtr.dispose();
 		debugBox.dispose();
 		debugBox2.dispose();
+		debugBox3.dispose();
+		mCHPContainer.dispose();
+		foeHPContainer.dispose();
+		endText.dispose();
+		background.dispose();
 	}
 	
 	private void SetupActors(){
@@ -129,8 +143,8 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	}
 
 	public static void endGame(boolean win) {
+		if(win) endText = new Texture("GameEnd-1.png");
+		else endText = new Texture("GameEnd-2.png");
 		gameUpdate = false;
-		if(win); 
-		else;
 	}
 }
