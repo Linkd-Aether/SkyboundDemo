@@ -2,6 +2,7 @@ package com.skybound.demo.desktop;
 
 import java.util.Scanner;
 
+
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -17,10 +18,9 @@ public class DesktopLauncher {
 //		String ans = scan.nextLine();
 //		if(ans == "yes" || ans == "Yes") {
 //			System.out.println("AH");
-			config.fullscreen = true;
+//			config.fullscreen = true;
 //		}
 //		scan.close();
-		System.out.println(config.fullscreen);
 		config.width = 640;
 		config.height = 480;
 		config.disableAudio = true;

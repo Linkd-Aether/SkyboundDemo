@@ -302,6 +302,11 @@ public class PlayerChar implements ActorGeneric {
 		
 		if(idleCount == 60) idleCount = 0;
 		
+		if((Gdx.input.isKeyJustPressed(Input.Keys.EQUALS) || (!Controllers.getControllers().isEmpty() && Controllers.getControllers().get(0).getButton(5)))){
+			if(SkyboundDemoMain.getDebug() == true) SkyboundDemoMain.setDebug(false);
+			else SkyboundDemoMain.setDebug(true);
+		}
+		
 	}
 	
 	boolean joystickCheck(String dir) {

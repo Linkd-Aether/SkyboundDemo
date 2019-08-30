@@ -38,7 +38,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	Texture fbTxtr;
 	Sprite fbSpr;
 	
-	boolean debug = false;
+	static boolean debug = true;
 	Texture debugBox3;
 	Texture debugBox2;
 	Texture debugBox;
@@ -147,4 +147,13 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		else endText = new Texture("GameEnd-2.png");
 		gameUpdate = false;
 	}
+	
+	public static void setDebug(boolean toSet) {
+		debug = toSet;
+	}
+	
+	public static boolean getDebug() {
+		return debug;
+	}
+	
 }
