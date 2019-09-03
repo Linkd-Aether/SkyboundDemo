@@ -52,24 +52,22 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	static boolean gameUpdate = true;
 	static Texture endText;
 	
+	String gameMode = "menu";
+	
 	@Override
 	public void create () {
 		
 		background = new Texture("Background-1.png");
 		playerTxtr = new Texture("AyanaNeutral-1.png");
 		playerSpr = new Sprite(playerTxtr);
-		enemyTxtr = new Texture("GrimaNeutralBlue-1.png");
-		enemySpr = new Sprite(enemyTxtr);
-		fbTxtr = new Texture("Fireball-1.png");
-		fbSpr = new Sprite(fbTxtr);
 		batch = new SpriteBatch();
 		debugBox = new Texture("debug.png");
 		debugBox2 = new Texture("debug2.png");
 		debugBox3 = new Texture("debug3.png");
 		mCHPContainer = new Texture("AyanaHealthBar-1.png");
-		foeHPContainer = new Texture("DragonHealthBar-1.png");
 		endText = new Texture("debug.png");
-		SetupActors();
+		startBossFight();
+		SetupActors("boss");
 		
 		int i = 0;
 		for (Controller controller : Controllers.getControllers()) {
@@ -78,6 +76,14 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		if (Controllers.getControllers().size == 0) System.out.println("No controllers attached");
 	}
 
+	public void startBossFight() {
+		enemyTxtr = new Texture("GrimaNeutralBlue-1.png");
+		enemySpr = new Sprite(enemyTxtr);
+		fbTxtr = new Texture("Fireball-1.png");
+		fbSpr = new Sprite(fbTxtr);
+		foeHPContainer = new Texture("DragonHealthBar-1.png");
+	}
+	
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
@@ -136,10 +142,12 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		background.dispose();
 	}
 	
-	private void SetupActors(){
+	private void SetupActors(String mode){
 		mc = new PlayerChar(playerTxtr, playerSpr);
-		foe = new Enemy(enemyTxtr, enemySpr);
-		fb = new Fireball(fbTxtr, fbSpr);
+		if(mode.equals("boss")) {
+			foe = new Enemy(enemyTxtr, enemySpr);
+			fb = new Fireball(fbTxtr, fbSpr);
+		}
 	}
 
 	public static void endGame(boolean win) {
