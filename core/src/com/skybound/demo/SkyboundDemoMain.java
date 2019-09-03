@@ -38,7 +38,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	Texture fbTxtr;
 	Sprite fbSpr;
 	
-	static boolean debug = true;
+	static boolean debug = false;
 	Texture debugBox3;
 	Texture debugBox2;
 	Texture debugBox;

@@ -144,8 +144,7 @@ public class Enemy implements ActorGeneric {
 			if(duration % 20 == 0) changeSprite("DragonAir" + addFireball + "-2.png");
 			
 			if(duration-- > 0 && airMomentum <= 0) if(spri.getY() <= 200) {
-				spri.setY(200);
-				airMomentum = 0;
+				airMomentum = 10;
 			}
 			
 			if(duration == 240 || duration == 360 || duration == 480) {
