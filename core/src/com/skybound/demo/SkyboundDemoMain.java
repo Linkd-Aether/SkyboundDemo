@@ -54,6 +54,8 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	
 	String gameMode = "menu";
 	
+	MenuHandler menu = new MenuHandler();
+	
 	@Override
 	public void create () {
 		
