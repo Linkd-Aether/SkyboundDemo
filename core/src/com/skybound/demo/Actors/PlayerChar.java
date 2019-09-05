@@ -95,7 +95,7 @@ public class PlayerChar implements ActorGeneric {
 		
 		startLag--;
 		
-		if((Gdx.input.isKeyPressed(Input.Keys.LEFT) || Joystick.joystickCheck("left")) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(-8);
+		if((Gdx.input.isKeyPressed(Input.Keys.A) || Joystick.joystickCheck("left")) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(-8);
 			if(runCycle < 4 && !inAir) {
 				changeSprite("AyanaRun-1.png");
 				runCycle++;
@@ -110,7 +110,7 @@ public class PlayerChar implements ActorGeneric {
 			if(!inAir) facingRight = false;
 		}
 		
-		if((Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Joystick.joystickCheck("right")) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(8);
+		if((Gdx.input.isKeyPressed(Input.Keys.D) || Joystick.joystickCheck("right")) && (inAir || currentAction == PlayerActions.idle) && currentAction != PlayerActions.takeDamage) { spri.translateX(8);
 			if(runCycle < 4 && !inAir) {
 				changeSprite("AyanaRun-1.png");
 				runCycle++;
@@ -137,14 +137,14 @@ public class PlayerChar implements ActorGeneric {
 			spri.setRotation(0);
 		}
 		
-		if((Gdx.input.isKeyJustPressed(Input.Keys.Z) || (Joystick.controllersActive() && Joystick.buttonCheck(1))) && currentAction == PlayerActions.idle) {
+		if((Gdx.input.isKeyJustPressed(Input.Keys.L) || (Joystick.controllersActive() && Joystick.buttonCheck(1))) && currentAction == PlayerActions.idle) {
 			
 			spri.setRotation(0);
 			
 			framesSinceLastAction = 0;
 			
 			//Up attacks
-			if(Gdx.input.isKeyPressed(Input.Keys.UP) || Joystick.joystickCheck("up")) {
+			if(Gdx.input.isKeyPressed(Input.Keys.W) || Joystick.joystickCheck("up")) {
 				setHit(75, 60, 20, 75);
 				if(inAir) {
 					hasAirAttacked = true;
@@ -160,7 +160,7 @@ public class PlayerChar implements ActorGeneric {
 			}
 			
 			//Down attacks
-			else if(Gdx.input.isKeyPressed(Input.Keys.DOWN) || Joystick.joystickCheck("down")) {
+			else if(Gdx.input.isKeyPressed(Input.Keys.S) || Joystick.joystickCheck("down")) {
 				if(inAir) {
 					setHit(60, 50, 20, -20);
 					hasAirAttacked = true;
@@ -180,7 +180,7 @@ public class PlayerChar implements ActorGeneric {
 			//Side attacks
 			else if(facingRight) {
 				if(inAir) {
-					if(Gdx.input.isKeyPressed(Input.Keys.LEFT) || Joystick.joystickCheck("left")) {
+					if(Gdx.input.isKeyPressed(Input.Keys.A) || Joystick.joystickCheck("left")) {
 						setHit(70, 40, -20, 20);
 						hasAirAttacked = true;
 						changeSprite("AyanaBAir-1.png");
@@ -204,7 +204,7 @@ public class PlayerChar implements ActorGeneric {
 			}
 			else {
 				if(inAir) {
-					if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Joystick.joystickCheck("right")) {
+					if(Gdx.input.isKeyPressed(Input.Keys.D) || Joystick.joystickCheck("right")) {
 						setHit(70, 40, 60, 20);
 						hasAirAttacked = true;
 						changeSprite("AyanaBAir-1.png");
@@ -284,8 +284,7 @@ public class PlayerChar implements ActorGeneric {
 			}
 		}
 		
-		if(!invulnerable && ((spri.getBoundingRectangle().overlaps(Enemy.hit) && Enemy.hit.getActive()) || 
-				(spri.getBoundingRectangle().overlaps(Fireball.hit) && Fireball.hit.getActive()))) takeDamage();
+		if(!invulnerable && (SkyboundDemoMain.gameMode == "boss" && (hitboxCheck(Enemy.hit)) || (hitboxCheck(Fireball.hit)))) takeDamage();
 		
 		if(currentAction == PlayerActions.takeDamage && framesSinceLastAction >= 30) currentAction = PlayerActions.idle;
 		
@@ -296,7 +295,7 @@ public class PlayerChar implements ActorGeneric {
 			spri.setAlpha(1);
 		}
 		
-		if(currentAction == PlayerActions.idle && (!Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !Joystick.joystickCheck("left") && !Joystick.joystickCheck("right") || inAir)) {
+		if(currentAction == PlayerActions.idle && (!Gdx.input.isKeyPressed(Input.Keys.A) && !Gdx.input.isKeyPressed(Input.Keys.D) && !Joystick.joystickCheck("left") && !Joystick.joystickCheck("right") || inAir)) {
 			if(!inAir) changeSprite("AyanaNeutral-" + (idleCount++ / 20 + 1) + ".png");
 			else changeSprite("AyanaFalling-1.png");
 		}
@@ -310,7 +309,9 @@ public class PlayerChar implements ActorGeneric {
 		
 	}
 	
-	
+	private boolean hitboxCheck(Hitbox hit) {
+		return spri.getBoundingRectangle().overlaps(hit) && hit.getActive();
+	}
 	
 	@Override
 	public Sprite getSprite() {

@@ -19,6 +19,9 @@ import com.skybound.demo.Actors.Enemy;
 import com.skybound.demo.Actors.Fireball;
 import com.skybound.demo.Actors.PlayerChar;
 import com.skybound.demo.specialRects.Hitbox;
+
+import menu.MenuHandler;
+
 import com.badlogic.gdx.math.Rectangle;
 
 
@@ -52,7 +55,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	static boolean gameUpdate = true;
 	static Texture endText;
 	
-	String gameMode = "menu";
+	public static String gameMode = "menu";
 	
 	MenuHandler menu = new MenuHandler();
 	
@@ -68,7 +71,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		debugBox3 = new Texture("debug3.png");
 		mCHPContainer = new Texture("AyanaHealthBar-1.png");
 		endText = new Texture("debug.png");
-		startBossFight();
+//		startBossFight();
 		SetupActors("boss");
 		
 		int i = 0;
@@ -92,37 +95,42 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(background, 0, 0, 640, 480);
-		foe.getSprite().draw(batch);
+		
 		mc.getSprite().draw(batch);
-		if(fb.getActive()) fb.getSprite().draw(batch);
+		
 		if(mc.getHitbox().getActive() && debug) {
 			tempHit = mc.getHitbox();
 			batch.draw(debugBox, tempHit.getX(), tempHit.getY(), tempHit.getWidth(), tempHit.getHeight());
-		}
-		if(foe.getHitbox().getActive() && debug) {
-			tempHit = foe.getHitbox();
-			batch.draw(debugBox2, tempHit.getX(), tempHit.getY(), tempHit.getWidth(), tempHit.getHeight());
 		}
 		if(debug) {
 			tempHit = mc.getHitbox();
 			batch.draw(debugBox, mc.getX(), mc.getY(), 1, 800);
 		}
-		if(debug) {
-			tempHit = foe.getHitbox();
-			batch.draw(debugBox2, foe.getX(), foe.getY(), 1, 800);
-		}
-		
 		if(mc.hp > 0)batch.draw(debugBox2, 40, 255, 20, 140 - (int)((100 - mc.hp) * 1.4));
 		batch.draw(mCHPContainer, -50, 250);
 		
-		if(foe.hp > 0) batch.draw(debugBox3, 190 + (200 - foe.hp) * 2, 410, 400 - (200 - foe.hp) * 2, 30);
+		if(gameMode == "boss") {
+			if(fb.getActive()) fb.getSprite().draw(batch);
+			foe.getSprite().draw(batch);
+			if(foe.getHitbox().getActive() && debug) {
+				tempHit = foe.getHitbox();
+				batch.draw(debugBox2, tempHit.getX(), tempHit.getY(), tempHit.getWidth(), tempHit.getHeight());
+			}
+			if(debug) {
+				tempHit = foe.getHitbox();
+				batch.draw(debugBox2, foe.getX(), foe.getY(), 1, 800);
+			}
+			if(foe.hp > 0) batch.draw(debugBox3, 190 + (200 - foe.hp) * 2, 410, 400 - (200 - foe.hp) * 2, 30);
+			batch.draw(foeHPContainer, 100, 200);
+		}
 		
-		batch.draw(foeHPContainer, 100, 200);
-		
+				
 		if(gameUpdate) {
 			mc.update();
+			if(gameMode == "boss") {
 			foe.update();
 			fb.update();
+			}
 		}
 		else batch.draw(endText, 225, 250, 200, 43);
 		
@@ -133,13 +141,15 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 		playerTxtr.dispose();
-		enemyTxtr.dispose();
-		fbTxtr.dispose();
 		debugBox.dispose();
 		debugBox2.dispose();
 		debugBox3.dispose();
 		mCHPContainer.dispose();
-		foeHPContainer.dispose();
+		if(gameMode == "boss") {
+			enemyTxtr.dispose();
+			fbTxtr.dispose();
+			foeHPContainer.dispose();
+		}
 		endText.dispose();
 		background.dispose();
 	}

@@ -15,11 +15,11 @@ public class Hitbox extends Rectangle {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Hitbox(float x, float y, float width, float height) {
+	public Hitbox(float x, float y, float width, float height, int damage) {
 		super(x, y, width, height);
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	public void setActive(boolean active) {
 		this.active = active;
 	}
