@@ -19,8 +19,7 @@ import com.skybound.demo.Actors.Enemy;
 import com.skybound.demo.Actors.Fireball;
 import com.skybound.demo.Actors.PlayerChar;
 import com.skybound.demo.specialRects.Hitbox;
-
-import menu.MenuHandler;
+import com.skybound.demo.menu.MenuHandler;
 
 import com.badlogic.gdx.math.Rectangle;
 
@@ -56,6 +55,10 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	static Texture endText;
 	
 	public static String gameMode = "menu";
+	Sprite bossButton;
+	Sprite rushButton;
+	Sprite duelButton;
+	Sprite controlsExpl;
 	
 	MenuHandler menu = new MenuHandler();
 	
@@ -71,8 +74,9 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		debugBox3 = new Texture("debug3.png");
 		mCHPContainer = new Texture("AyanaHealthBar-1.png");
 		endText = new Texture("debug.png");
+		
 //		startBossFight();
-		SetupActors("boss");
+		SetupActors(gameMode);
 		
 		int i = 0;
 		for (Controller controller : Controllers.getControllers()) {
@@ -81,6 +85,16 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		if (Controllers.getControllers().size == 0) System.out.println("No controllers attached");
 	}
 
+	public void setupMainMenu() {
+		bossButton = new Sprite(debugBox);
+		bossButton.setBounds(100, 200, 100, 150);
+		rushButton = new Sprite(debugBox);
+		rushButton.setBounds(100, 400, 100, 150);
+		duelButton = new Sprite(debugBox);
+		duelButton.setBounds(100, 600, 100, 150);
+		
+	}
+	
 	public void startBossFight() {
 		enemyTxtr = new Texture("GrimaNeutralBlue-1.png");
 		enemySpr = new Sprite(enemyTxtr);
@@ -95,7 +109,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(background, 0, 0, 640, 480);
-		
+				
 		mc.getSprite().draw(batch);
 		
 		if(mc.getHitbox().getActive() && debug) {

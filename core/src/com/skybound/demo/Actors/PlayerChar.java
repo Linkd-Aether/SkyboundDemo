@@ -284,8 +284,8 @@ public class PlayerChar implements ActorGeneric {
 			}
 		}
 		
-		if(!invulnerable && (SkyboundDemoMain.gameMode == "boss" && (hitboxCheck(Enemy.hit)) || (hitboxCheck(Fireball.hit)))) takeDamage();
-		
+		if(!invulnerable && (SkyboundDemoMain.gameMode == "boss" && (hitboxCheck(Enemy.hit) || hitboxCheck(Fireball.hit)))) takeDamage();
+				
 		if(currentAction == PlayerActions.takeDamage && framesSinceLastAction >= 30) currentAction = PlayerActions.idle;
 		
 		if(invulnerable) framesInvulnerable++;
