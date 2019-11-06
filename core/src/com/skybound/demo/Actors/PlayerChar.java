@@ -82,8 +82,8 @@ public class PlayerChar implements ActorGeneric {
 		framesInvulnerable = 0;
 		spri.setAlpha((float) .5);
 		if(Fireball.active) hp -= 10;
-		else if(Enemy.currentAction == EnemyActions.claw) hp -= 5;
-		else if(Enemy.currentAction == EnemyActions.jump || Enemy.currentAction == EnemyActions.fly) hp -= 10;
+		else if(Boss.currentAction == BossActions.claw) hp -= 5;
+		else if(Boss.currentAction == BossActions.jump || Boss.currentAction == BossActions.fly) hp -= 10;
 	}
 	
 	@Override
@@ -284,7 +284,7 @@ public class PlayerChar implements ActorGeneric {
 			}
 		}
 		
-		if(!invulnerable && (SkyboundDemoMain.gameMode == "boss" && (hitboxCheck(Enemy.hit) || hitboxCheck(Fireball.hit)))) takeDamage();
+		if(!invulnerable && (SkyboundDemoMain.gameMode == "boss" && (hitboxCheck(Boss.hit) || hitboxCheck(Fireball.hit)))) takeDamage();
 				
 		if(currentAction == PlayerActions.takeDamage && framesSinceLastAction >= 30) currentAction = PlayerActions.idle;
 		

@@ -1,5 +1,5 @@
 package com.skybound.demo.Actors;
 
-public enum EnemyActions {
+public enum BossActions {
 	idle, walk, fireball, claw, jump, fly;
 }

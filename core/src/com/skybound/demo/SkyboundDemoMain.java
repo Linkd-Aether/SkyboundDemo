@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.skybound.demo.Actors.Enemy;
+import com.skybound.demo.Actors.Boss;
 import com.skybound.demo.Actors.Fireball;
 import com.skybound.demo.Actors.PlayerChar;
 import com.skybound.demo.specialRects.Hitbox;
@@ -32,9 +32,9 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	OrthographicCamera camera;
 	public static PlayerChar mc;
 	
-	public static Enemy foe;
-	Texture enemyTxtr;
-	Sprite enemySpr;
+	public static Boss foe;
+	Texture bossTxtr;
+	Sprite bossSpr;
 	
 	public static Fireball fb;
 	Texture fbTxtr;
@@ -54,7 +54,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	static boolean gameUpdate = true;
 	static Texture endText;
 	
-	public static String gameMode = "menu";
+	public static String gameMode = "boss";
 	Sprite bossButton;
 	Sprite rushButton;
 	Sprite duelButton;
@@ -75,7 +75,13 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		mCHPContainer = new Texture("AyanaHealthBar-1.png");
 		endText = new Texture("debug.png");
 		
-//		startBossFight();
+		if(gameMode == "boss") {
+			startBossFight();
+		}
+		else {
+			setupMainMenu();
+		}
+		
 		SetupActors(gameMode);
 		
 		int i = 0;
@@ -96,8 +102,8 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	}
 	
 	public void startBossFight() {
-		enemyTxtr = new Texture("GrimaNeutralBlue-1.png");
-		enemySpr = new Sprite(enemyTxtr);
+		bossTxtr = new Texture("GrimaNeutralBlue-1.png");
+		bossSpr = new Sprite(bossTxtr);
 		fbTxtr = new Texture("Fireball-1.png");
 		fbSpr = new Sprite(fbTxtr);
 		foeHPContainer = new Texture("DragonHealthBar-1.png");
@@ -160,7 +166,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 		debugBox3.dispose();
 		mCHPContainer.dispose();
 		if(gameMode == "boss") {
-			enemyTxtr.dispose();
+			bossTxtr.dispose();
 			fbTxtr.dispose();
 			foeHPContainer.dispose();
 		}
@@ -171,7 +177,7 @@ public class SkyboundDemoMain extends ApplicationAdapter {
 	private void SetupActors(String mode){
 		mc = new PlayerChar(playerTxtr, playerSpr);
 		if(mode.equals("boss")) {
-			foe = new Enemy(enemyTxtr, enemySpr);
+			foe = new Boss(bossTxtr, bossSpr);
 			fb = new Fireball(fbTxtr, fbSpr);
 		}
 	}

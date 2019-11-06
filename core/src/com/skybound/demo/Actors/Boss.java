@@ -5,13 +5,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.skybound.demo.SkyboundDemoMain;
 import com.skybound.demo.specialRects.Hitbox;
 
-public class Enemy implements ActorGeneric {
+public class Boss implements ActorGeneric {
 
 	Texture txtr;
 	public static Hitbox hit;
 	Sprite spri;
 	String addFireball = "";
-	static EnemyActions currentAction = EnemyActions.idle;
+	static BossActions currentAction = BossActions.idle;
 	boolean inAir = false;
 	boolean facingRight = true;
 	boolean invulnerable = false;
@@ -26,7 +26,7 @@ public class Enemy implements ActorGeneric {
 	int hitY = 0;
 	public int hp = 200;
 	
-	public Enemy(Texture txt, Sprite spr) {
+	public Boss(Texture txt, Sprite spr) {
 		txtr = txt;
 		spri = spr;
 		hit = new Hitbox();
@@ -56,7 +56,7 @@ public class Enemy implements ActorGeneric {
 		
 		if(hp <= 0) SkyboundDemoMain.endGame(true);
 		
-		if(currentAction == EnemyActions.idle) {
+		if(currentAction == BossActions.idle) {
 			changeSprite("DragonIdle-1.png");
 			framesIdle++;
 			if(!inAir && framesIdle % 10 == 0 && Math.random() * 1200 <= framesIdle) {
@@ -70,7 +70,7 @@ public class Enemy implements ActorGeneric {
 			}
 		}
 		
-		if(currentAction == EnemyActions.walk) {
+		if(currentAction == BossActions.walk) {
 			if(duration-- >= 0) {
 				if(Math.abs(SkyboundDemoMain.mc.getSprite().getX() - (getX() + 150)) < 20) {
 					claw();
@@ -85,11 +85,11 @@ public class Enemy implements ActorGeneric {
 				}
 			}
 			if(duration <= 0) {
-				currentAction = EnemyActions.idle;
+				currentAction = BossActions.idle;
 			}
 		}
 		
-		if(currentAction == EnemyActions.claw) {
+		if(currentAction == BossActions.claw) {
 			if(duration-- == 110 || duration == 60 || duration == 10) {
 				changeSprite("DragonClaw-2.png");
 				hit.setActive(true);
@@ -106,10 +106,10 @@ public class Enemy implements ActorGeneric {
 				changeSprite("DragonClaw-1.png");
 				hit.setActive(false);
 			}
-			if(duration <= 0) currentAction = EnemyActions.idle;
+			if(duration <= 0) currentAction = BossActions.idle;
 		}
 		
-		if(currentAction == EnemyActions.fireball) {
+		if(currentAction == BossActions.fireball) {
 			changeSprite("DragonFireball-1.png");
 			if(duration-- == 60) {
 				SkyboundDemoMain.fb.setActive(true);
@@ -117,10 +117,10 @@ public class Enemy implements ActorGeneric {
 				else SkyboundDemoMain.fb.set((int) spri.getX(), (int) spri.getY() + 65, 180, 10);
 			}
 			if(duration < 60) changeSprite("DragonIdle-1.png");
-			if(duration <= 0) currentAction = EnemyActions.idle;
+			if(duration <= 0) currentAction = BossActions.idle;
 		}
 		
-		if(currentAction == EnemyActions.jump) {
+		if(currentAction == BossActions.jump) {
 			hit.setActive(true);
 			if(airMomentum > 0) {
 				
@@ -134,7 +134,7 @@ public class Enemy implements ActorGeneric {
 			else spri.translateX(-2);
 		}
 		
-		if(currentAction == EnemyActions.fly) {
+		if(currentAction == BossActions.fly) {
 			hit.setActive(true);
 			if(airMomentum > 0) setHit(200, 100, 0, 100);
 			else if(airMomentum < -1)setHit(200, 100, 0, 0);
@@ -161,7 +161,7 @@ public class Enemy implements ActorGeneric {
 		
 		
 		if(spri.getY() < 0) {
-			currentAction = EnemyActions.idle;
+			currentAction = BossActions.idle;
 			spri.setY(0);
 			inAir = false;
 			hit.setActive(false);
@@ -223,26 +223,26 @@ public class Enemy implements ActorGeneric {
 
 	public void walk(int frames) {
 		duration = frames;
-		currentAction = EnemyActions.walk;
+		currentAction = BossActions.walk;
 	}
 	
 	public void claw() {
 		changeSprite("DragonClaw-1.png");
 		duration = 150;
-		currentAction = EnemyActions.claw;
+		currentAction = BossActions.claw;
 	}
 	
 	public void fireball() {
 		if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) rightCheck(true);
 		else rightCheck(false);
 		duration = 120;
-		currentAction = EnemyActions.fireball;
+		currentAction = BossActions.fireball;
 	}
 	
 	public void jump() {
 		if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) rightCheck(true);
 		else rightCheck(false);
-		currentAction = EnemyActions.jump;
+		currentAction = BossActions.jump;
 		inAir = true;
 		airMomentum = 25;
 	}
@@ -251,7 +251,7 @@ public class Enemy implements ActorGeneric {
 		if(SkyboundDemoMain.mc.getSprite().getX() > getX() + 100) rightCheck(true);
 		else rightCheck(false);
 		duration = 600;
-		currentAction = EnemyActions.fly;
+		currentAction = BossActions.fly;
 		inAir = true;
 		airMomentum = 25;
 	}
